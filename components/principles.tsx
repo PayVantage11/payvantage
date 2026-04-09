@@ -3,11 +3,10 @@
 import { type ReactNode } from "react";
 import {
   Sparkles,
-  Landmark,
-  CreditCard,
+  ShieldCheck,
+  Plug,
   BarChart3,
   ArrowRight,
-  Shield,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -20,38 +19,38 @@ type PrincipleCard = {
 
 const principles: PrincipleCard[] = [
   {
-    icon: <Landmark className="w-12 h-12" strokeWidth={1} />,
-    label: "Bank-grade Infrastructure",
+    icon: <ShieldCheck className="h-12 w-12" strokeWidth={1} />,
+    label: "Chargeback Immunity",
   },
   {
-    icon: <Shield className="w-12 h-12" strokeWidth={1} />,
-    label: "Regulated & Compliant",
+    icon: <Sparkles className="h-12 w-12" strokeWidth={1} />,
+    label: "No Underwriting",
   },
   {
-    icon: <CreditCard className="w-12 h-12" strokeWidth={1} />,
-    label: "Instant Card Controls",
+    icon: <Plug className="h-12 w-12" strokeWidth={1} />,
+    label: "WooCommerce & Shopify",
   },
   {
-    icon: <BarChart3 className="w-12 h-12" strokeWidth={1} />,
-    label: "Real-time Analytics",
+    icon: <BarChart3 className="h-12 w-12" strokeWidth={1} />,
+    label: "Real-time Dashboard",
   },
 ];
 
 export function Principles(): ReactNode {
   return (
-    <section className="relative w-full bg-muted text-foreground py-24 sm:py-32">
+    <section className="relative w-full bg-muted py-24 text-foreground sm:py-32">
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, ease }}
-              className="flex items-center gap-2 mb-6"
+              className="mb-6 flex items-center gap-2"
             >
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">Why Finaro?</span>
+              <Sparkles className="h-4 w-4" />
+              <span className="text-sm font-medium">Why PayVantage?</span>
             </motion.div>
 
             <motion.h2
@@ -59,10 +58,10 @@ export function Principles(): ReactNode {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1, ease }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-medium font-serif leading-tight"
+              className="font-serif text-3xl font-medium leading-tight sm:text-4xl lg:text-5xl"
             >
-              Modern banking with{" "}
-              <span className="italic">security at the core</span>
+              Built for merchants{" "}
+              <span className="italic">banks won&apos;t serve</span>
             </motion.h2>
 
             <motion.p
@@ -70,26 +69,28 @@ export function Principles(): ReactNode {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2, ease }}
-              className="mt-6 text-foreground/70 leading-relaxed max-w-lg"
+              className="mt-6 max-w-lg leading-relaxed text-foreground/70"
             >
-              From instant payments to global transfers, every feature is
-              designed to give you complete control over your finances.
+              Traditional processors reject high-risk merchants or bury them in
+              fees and reserves. PayVantage uses stablecoin settlement to
+              eliminate chargebacks, remove underwriting, and deliver instant
+              payouts.
             </motion.p>
 
             <motion.a
-              href="#"
+              href="/signup"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3, ease }}
-              className="group inline-flex items-center gap-2 mt-8 px-6 py-3 bg-foreground text-background rounded-full text-sm font-medium w-fit hover:bg-foreground/90 transition-colors"
+              className="group mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
             >
-              Open an account
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              Get started free
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </motion.a>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 max-w-md lg:ml-auto">
+          <div className="grid max-w-md grid-cols-2 gap-2 lg:ml-auto">
             {principles.map((principle, index) => (
               <motion.div
                 key={principle.label}
@@ -97,10 +98,12 @@ export function Principles(): ReactNode {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 * index, ease }}
-                className="aspect-square flex flex-col items-center justify-center bg-foreground/5 rounded-sm"
+                className="flex aspect-square flex-col items-center justify-center rounded-sm bg-foreground/5"
               >
-                <div className="mb-4 text-foreground/80">{principle.icon}</div>
-                <p className="text-sm text-center text-foreground/80 px-4">
+                <div className="mb-4 text-foreground/80">
+                  {principle.icon}
+                </div>
+                <p className="px-4 text-center text-sm text-foreground/80">
                   {principle.label}
                 </p>
               </motion.div>

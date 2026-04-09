@@ -77,80 +77,67 @@ const fragmentShader = `
   void main() {
     vec2 uv = vUv;
     uv.x *= iResolution.x / iResolution.y;
-    
+
     float t = iTime * 0.15;
-    
-    // Aurora beams - from bottom
+
     float beam1 = snoise(vec3(uv.x * 1.5 + t * 0.5, uv.y * 0.8 - t * 0.2, t * 0.3));
     float beam2 = snoise(vec3(uv.x * 2.0 - t * 0.3, uv.y * 0.6 + t * 0.1, t * 0.2 + 10.0));
     float beam3 = snoise(vec3(uv.x * 1.2 + t * 0.2, uv.y * 1.0 - t * 0.15, t * 0.25 + 20.0));
-    
-    // Vertical gradient - stronger at bottom
+
     float verticalFade = pow(1.0 - uv.y, 1.5);
     float verticalFade2 = pow(1.0 - uv.y, 2.5);
-    
-    // Light beam shapes
+
     float light1 = smoothstep(0.0, 0.8, beam1 * verticalFade);
     float light2 = smoothstep(0.0, 0.7, beam2 * verticalFade);
     float light3 = smoothstep(0.0, 0.6, beam3 * verticalFade2);
-    
-    // Position-based color mixing
+
     float xPos = uv.x / (iResolution.x / iResolution.y);
-    
-    // Add subtle glow at bottom center
+
     float centerGlow = exp(-pow((xPos - 0.5) * 2.0, 2.0)) * verticalFade2;
-    
+
     vec3 col;
-    
+
     if (isDark > 0.5) {
-      // Dark mode - original dark aurora effect
       col = vec3(0.02, 0.02, 0.06);
-      
+
       vec3 orange = vec3(0.95, 0.4, 0.1);
       vec3 red = vec3(0.85, 0.15, 0.2);
       vec3 pink = vec3(0.7, 0.2, 0.4);
       vec3 blue = vec3(0.1, 0.3, 0.7);
       vec3 cyan = vec3(0.1, 0.6, 0.8);
-      
+
       col += orange * light1 * 0.6 * smoothstep(0.6, 0.2, xPos);
       col += red * light1 * 0.5 * smoothstep(0.3, 0.5, xPos) * smoothstep(0.7, 0.5, xPos);
       col += pink * light2 * 0.4 * smoothstep(0.4, 0.6, xPos);
       col += blue * light3 * 0.5 * smoothstep(0.5, 0.8, xPos);
       col += cyan * light2 * 0.3 * smoothstep(0.7, 1.0, xPos);
       col += vec3(0.9, 0.5, 0.3) * centerGlow * 0.3;
-      
-      // Slight vignette
+
       float vignette = 1.0 - pow(length(uv - vec2(0.5 * iResolution.x / iResolution.y, 0.5)) * 0.8, 2.0);
       col *= max(vignette, 0.3);
       col = pow(col, vec3(0.9));
     } else {
-      // Light mode - soft pastel gradient on white
       col = vec3(0.98, 0.98, 0.97);
-      
-      // Softer, more pastel colors for light mode
+
       vec3 peach = vec3(1.0, 0.85, 0.75);
       vec3 salmon = vec3(1.0, 0.75, 0.7);
       vec3 lavender = vec3(0.85, 0.75, 0.95);
       vec3 skyBlue = vec3(0.75, 0.85, 1.0);
-      
-      // Create a soft diffused blob effect
+
       float blobIntensity = light1 * 0.5 + light2 * 0.3 + centerGlow * 0.8;
       blobIntensity = smoothstep(0.0, 1.0, blobIntensity);
-      
-      // Blend pastel colors based on position
+
       vec3 gradientColor = mix(peach, salmon, smoothstep(0.3, 0.5, xPos));
       gradientColor = mix(gradientColor, lavender, smoothstep(0.5, 0.7, xPos));
       gradientColor = mix(gradientColor, skyBlue, smoothstep(0.7, 0.9, xPos));
-      
-      // Apply the blob with soft edges
+
       col = mix(col, gradientColor, blobIntensity * 0.7);
-      
-      // Soft radial fade from center-bottom
+
       float radialFade = 1.0 - length(vec2(xPos - 0.5, uv.y - 0.3) * vec2(1.2, 1.5));
       radialFade = smoothstep(0.0, 0.8, radialFade);
       col = mix(vec3(0.98, 0.98, 0.97), col, radialFade);
     }
-    
+
     gl_FragColor = vec4(col, 1.0);
   }
 `;
@@ -223,21 +210,21 @@ export function FinalCTA(): ReactNode {
   }, [isDark]);
 
   return (
-    <section className="relative w-full min-h-[20vh] flex items-center justify-center overflow-hidden">
+    <section className="relative flex min-h-[20vh] w-full items-center justify-center overflow-hidden">
       <div
         ref={containerRef}
         className="absolute inset-0 z-0"
         aria-hidden="true"
       />
-      <div className="relative z-10 mx-auto max-w-4xl px-6 sm:px-8 py-24 sm:py-32 text-center">
+      <div className="relative z-10 mx-auto max-w-4xl px-6 py-24 text-center sm:px-8 sm:py-32">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease }}
-          className="text-4xl md:text-5xl max-w-md mx-auto font-medium font-serif text-foreground leading-tight"
+          className="mx-auto max-w-md font-serif text-4xl font-medium leading-tight text-foreground md:text-5xl"
         >
-          Start your financial journey today
+          Ready to accept payments without limits?
         </motion.h2>
 
         <motion.div
@@ -248,8 +235,8 @@ export function FinalCTA(): ReactNode {
           className="mt-10"
         >
           <a
-            href="#"
-            className="inline-flex items-center px-8 py-4 bg-foreground text-background rounded-full text-sm font-medium hover:bg-foreground/90 active:scale-[0.97] transition-all duration-150"
+            href="/signup"
+            className="inline-flex items-center rounded-full bg-foreground px-8 py-4 text-sm font-medium text-background transition-all duration-150 hover:bg-foreground/90 active:scale-[0.97]"
           >
             Get started free
           </a>

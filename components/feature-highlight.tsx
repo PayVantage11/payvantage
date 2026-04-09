@@ -1,110 +1,111 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { ArrowRight, TrendingUp, MessageSquare, Zap } from "lucide-react";
+import { ArrowRight, Zap, Shield, Clock } from "lucide-react";
 import { motion } from "motion/react";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
-const features = [
+const highlightFeatures = [
   {
-    icon: <TrendingUp className="w-4 h-4" />,
-    text: "See exactly where your money goes each month.",
+    icon: <Zap className="h-4 w-4" />,
+    text: "Payments settle to your wallet in under 5 minutes.",
   },
   {
-    icon: <Zap className="w-4 h-4" />,
-    text: "Get instant alerts for unusual spending patterns.",
+    icon: <Shield className="h-4 w-4" />,
+    text: "On-chain transactions are irreversible — zero chargebacks.",
   },
   {
-    icon: <MessageSquare className="w-4 h-4" />,
-    text: "Ask questions about your finances in plain English.",
+    icon: <Clock className="h-4 w-4" />,
+    text: "Go live in minutes with no underwriting or bank approval.",
   },
 ];
 
-function PhoneInCard(): ReactNode {
+function DashboardPreview(): ReactNode {
   return (
-    <div className="relative bg-accent/5 rounded-md border border-accent/10 pt-10 px-16 overflow-hidden h-full flex flex-col">
-      <div className="relative w-full max-w-70 mx-auto flex-1 flex flex-col">
-        <div className="relative bg-neutral-900 rounded-t-4xl pt-1 px-1 flex-1 flex flex-col">
-          <div className="bg-background rounded-t-[1.75rem] pt-6 flex-1">
-            <div className="px-5 pb-6">
-              <p className="text-[10px] text-muted-foreground mb-1">Total Balance</p>
-              <p className="text-2xl font-semibold tracking-tight text-foreground mb-1">$12,458.32</p>
-              <p className="text-xs text-emerald-500 font-medium mb-6">+$842.50 this month</p>
+    <div className="relative flex h-full flex-col overflow-hidden rounded-md border border-accent/10 bg-accent/5 px-6 pt-6">
+      <div className="relative mx-auto w-full max-w-xs flex-1">
+        <div className="rounded-t-xl border border-border bg-background p-5">
+          <p className="mb-1 text-[10px] text-muted-foreground">
+            Today&apos;s Volume
+          </p>
+          <p className="mb-1 text-2xl font-semibold tracking-tight text-foreground">
+            $8,421.00
+          </p>
+          <p className="mb-5 text-xs font-medium text-emerald-500">
+            +$2,180.00 vs yesterday
+          </p>
 
-              <div className="h-20 mb-6">
-                <svg viewBox="0 0 200 80" className="w-full h-full" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M0,60 Q20,55 40,50 T80,45 T120,35 T160,40 T200,20 V80 H0 Z"
-                    fill="url(#chartGradient)"
-                  />
-                  <path
-                    d="M0,60 Q20,55 40,50 T80,45 T120,35 T160,40 T200,20"
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </div>
+          <div className="mb-4 flex h-16 items-end justify-between gap-1.5">
+            {[0.2, 0.35, 0.5, 0.45, 0.6, 0.75, 0.65, 0.8, 0.9, 1.0].map(
+              (h, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-t bg-accent/60"
+                  style={{ height: `${h * 100}%` }}
+                />
+              )
+            )}
+          </div>
 
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
-                      <span className="text-blue-500 text-xs">↑</span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-foreground">Income</p>
-                      <p className="text-[10px] text-muted-foreground">Today</p>
-                    </div>
-                  </div>
-                  <p className="text-xs font-medium text-foreground">+$2,400</p>
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/10">
+                  <span className="text-xs text-emerald-500">&#x2713;</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-rose-500/10 flex items-center justify-center">
-                      <span className="text-rose-500 text-xs">↓</span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-foreground">Expenses</p>
-                      <p className="text-[10px] text-muted-foreground">Yesterday</p>
-                    </div>
-                  </div>
-                  <p className="text-xs font-medium text-foreground">-$180</p>
+                <div>
+                  <p className="text-xs font-medium text-foreground">
+                    USDC Settled
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">
+                    3 min ago
+                  </p>
                 </div>
               </div>
+              <p className="text-xs font-medium text-foreground">+$249.99</p>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/10">
+                  <span className="text-xs text-amber-500">&#x25CF;</span>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-foreground">
+                    Pending
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">
+                    Just now
+                  </p>
+                </div>
+              </div>
+              <p className="text-xs font-medium text-foreground">$89.00</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-accent/5 to-transparent pointer-events-none" />
+      <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-16 bg-linear-to-t from-accent/5 to-transparent" />
     </div>
   );
 }
 
 export function FeatureHighlight(): ReactNode {
   return (
-    <section className="relative w-full bg-background pb-24 sm:pb-32 overflow-hidden">
+    <section className="relative w-full overflow-hidden bg-background pb-24 sm:pb-32">
       <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-stretch">
+        <div className="grid grid-cols-1 items-stretch gap-16 lg:grid-cols-2 lg:gap-24">
           <div className="flex flex-col justify-center">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-medium font-serif leading-tight text-foreground"
+              className="font-serif text-3xl font-medium leading-tight text-foreground sm:text-4xl lg:text-5xl"
             >
-              Make smarter
+              Settlement in minutes,
               <br />
-              <span className="italic">financial decisions</span>
+              <span className="italic">not months</span>
             </motion.h2>
 
             <motion.p
@@ -112,9 +113,11 @@ export function FeatureHighlight(): ReactNode {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1, ease }}
-              className="mt-6 text-foreground/70 leading-relaxed max-w-lg"
+              className="mt-6 max-w-lg leading-relaxed text-foreground/70"
             >
-              AI is woven throughout your entire Finaro experience. Access real-time insights and personalized recommendations.
+              Every card payment is converted to stablecoins and settled
+              directly to your wallet. Track volume, monitor transactions, and
+              withdraw anytime from your PayVantage dashboard.
             </motion.p>
 
             <motion.ul
@@ -124,9 +127,9 @@ export function FeatureHighlight(): ReactNode {
               transition={{ duration: 0.5, delay: 0.2, ease }}
               className="mt-8 space-y-4"
             >
-              {features.map((feature, index) => (
+              {highlightFeatures.map((feature, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <span className="shrink-0 mt-0.5 text-foreground/60">
+                  <span className="mt-0.5 shrink-0 text-foreground/60">
                     {feature.icon}
                   </span>
                   <span className="text-foreground/80">{feature.text}</span>
@@ -135,15 +138,15 @@ export function FeatureHighlight(): ReactNode {
             </motion.ul>
 
             <motion.a
-              href="#"
+              href="/signup"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3, ease }}
-              className="group inline-flex items-center gap-2 mt-10 text-foreground font-medium hover:opacity-70 transition-opacity"
+              className="group mt-10 inline-flex items-center gap-2 font-medium text-foreground transition-opacity hover:opacity-70"
             >
-              Learn more
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              Start accepting payments
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </motion.a>
           </div>
 
@@ -152,9 +155,9 @@ export function FeatureHighlight(): ReactNode {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease }}
-            className="flex justify-center lg:justify-end h-full"
+            className="flex h-full justify-center lg:justify-end"
           >
-            <PhoneInCard />
+            <DashboardPreview />
           </motion.div>
         </div>
       </div>
