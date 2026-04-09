@@ -1,27 +1,27 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "React Bits Pro - Finance Template",
+  name: "PayVantage",
   description:
-    "The modern financial platform that grows with you. From personal accounts to enterprise solutions, manage your money with confidence.",
-  url: "https://finaro.com",
+    "The high-risk payment gateway powered by stablecoins. Accept payments without underwriting, chargebacks, or rolling reserves.",
+  url: "https://payvantage.io",
   ogImage: "/og-image.png",
-  creator: "@finaro",
+  creator: "@payvantage",
   authors: [
     {
-      name: "Finaro",
-      url: "https://finaro.com",
+      name: "PayVantage",
+      url: "https://payvantage.io",
     },
   ],
   keywords: [
-    "banking",
-    "finance",
-    "fintech",
-    "payments",
-    "business banking",
-    "money transfer",
-    "financial platform",
-    "modern banking",
+    "high-risk payments",
+    "payment gateway",
+    "stablecoin settlement",
+    "crypto onramp",
+    "chargeback-free",
+    "merchant services",
+    "PayRam",
+    "card-to-crypto",
   ],
 } as const;
 

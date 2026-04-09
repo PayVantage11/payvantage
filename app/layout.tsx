@@ -1,7 +1,5 @@
-import { Header } from "@/components/header";
 import { Providers } from "@/components/providers";
 import { SkipToContent } from "@/components/skip-to-content";
-import { ThemeSwitch } from "@/components/theme-switch";
 import { baseMetadata } from "@/lib/metadata";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -44,8 +42,6 @@ export default function RootLayout({
       >
         <Providers>
           <SkipToContent />
-          <Header />
-          <ThemeSwitch />
           {children}
         </Providers>
       </body>

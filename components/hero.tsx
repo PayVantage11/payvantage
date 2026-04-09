@@ -264,7 +264,7 @@ export function Hero(): ReactNode {
               transition={{ duration: 0.6, delay: 0.3, ease }}
               className="cursor-pointer flex items-center gap-2 pl-4 pr-3 py-1.5 bg-white rounded-full mb-6"
             >
-              <span className="text-xs font-medium text-black">New: Instant global transfers</span>
+              <span className="text-xs font-medium text-black">Powered by PayRam &mdash; Card-to-Crypto Onramping</span>
               <ChevronRight className="w-3 h-3 text-black/50" />
             </motion.div>
 
@@ -274,7 +274,7 @@ export function Hero(): ReactNode {
               transition={{ duration: 0.8, delay: 0.5, ease }}
               className="text-4xl sm:text-5xl md:text-6xl font-medium font-serif text-white text-left lg:text-center leading-tighter tracking-tight max-w-3xl"
             >
-              Spend, save, & invest with<br/> one powerful app
+              The high-risk payment<br/> gateway that just works
             </motion.h1>
 
             <motion.p
@@ -283,7 +283,7 @@ export function Hero(): ReactNode {
               transition={{ duration: 0.6, delay: 0.7, ease }}
               className="mt-5 text-lg text-white/70 text-left lg:text-center max-w-xl"
             >
-              Join 45 million people managing their money better with instant transfers, smart budgeting, and zero foreign exchange fees.
+              Accept card payments settled in stablecoins. No underwriting delays, no chargebacks, no rolling reserves. Start selling in minutes.
             </motion.p>
 
             <motion.div
@@ -292,17 +292,18 @@ export function Hero(): ReactNode {
               transition={{ duration: 0.6, delay: 0.9, ease }}
               className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 mt-10 w-full lg:w-auto"
             >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="h-12 w-full lg:w-72 px-5 text-sm bg-transparent border border-white/20 rounded-full text-white placeholder:text-white/50 focus:outline-none focus:border-white/40"
-              />
-              <button
-                type="button"
-                className="cursor-pointer h-12 px-6 text-sm font-medium bg-white text-black rounded-full hover:bg-white/90 active:scale-[0.97] transition-all duration-150 flex items-center justify-center gap-2 whitespace-nowrap"
+              <a
+                href="/signup"
+                className="cursor-pointer h-12 px-8 text-sm font-medium bg-white text-black rounded-full hover:bg-white/90 active:scale-[0.97] transition-all duration-150 flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                Get Started
-              </button>
+                Start Accepting Payments
+              </a>
+              <a
+                href="#"
+                className="cursor-pointer h-12 px-8 text-sm font-medium bg-transparent border border-white/20 text-white rounded-full hover:bg-white/10 active:scale-[0.97] transition-all duration-150 flex items-center justify-center gap-2 whitespace-nowrap"
+              >
+                Book a Demo
+              </a>
             </motion.div>
 
             <motion.p
@@ -312,7 +313,7 @@ export function Hero(): ReactNode {
               className="flex items-center gap-2 mt-6 text-sm text-white/60"
             >
               <Shield className="w-4 h-4" />
-              Industry-leading security. No hidden fees.
+              Stablecoin settlement. Irreversible payments. Zero fraud.
             </motion.p>
           </div>
         </motion.div>

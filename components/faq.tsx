@@ -13,29 +13,29 @@ type FAQItem = {
 
 const faqs: FAQItem[] = [
   {
-    question: "How do I open a Finaro account?",
+    question: "What is PayVantage?",
     answer:
-      "Opening an account takes just a few minutes. Download our app or sign up on our website, verify your identity with a valid ID, and you're ready to go. No minimum deposit required.",
+      "PayVantage is a payment gateway designed for high-risk merchants. We use card-to-crypto onramping via the PayRam API to convert card payments into stablecoins (USDC/USDT), giving you instant settlement without chargebacks or rolling reserves.",
   },
   {
-    question: "Are there any hidden fees?",
+    question: "How does chargeback immunity work?",
     answer:
-      "No hidden fees, ever. We're transparent about our pricing—free personal accounts, no monthly maintenance fees, and real exchange rates for international transfers. You'll always see the exact cost before confirming any transaction.",
+      "Once a cardholder completes a payment, their funds are converted to stablecoins on-chain. Blockchain transactions are irreversible, eliminating the traditional chargeback risk. Disputes are handled through our merchant support process, not bank reversals.",
   },
   {
-    question: "How fast are international transfers?",
+    question: "What are the fees?",
     answer:
-      "Most international transfers arrive instantly or within minutes. In some cases, depending on the destination country and local banking hours, it may take up to 24 hours. You can track your transfer in real-time through the app.",
+      "Our standard rate is 2.9% + $0.30 per transaction. There are no monthly fees, no setup fees, and no rolling reserves. Enterprise merchants with high volume can contact us for custom pricing.",
   },
   {
-    question: "Is my money safe with Finaro?",
+    question: "How fast is settlement?",
     answer:
-      "Absolutely. Your deposits are protected up to €100,000 under the European Deposit Insurance Scheme. We use bank-grade encryption, biometric authentication, and 24/7 fraud monitoring to keep your account secure.",
+      "Most payments are settled to your stablecoin wallet within 5 minutes of the customer completing checkout. Compare that to 30+ days with traditional high-risk processors.",
   },
   {
-    question: "Can I use Finaro for my business?",
+    question: "Do I need underwriting approval?",
     answer:
-      "Yes! We offer dedicated business accounts with features like multi-user access, expense management, corporate cards, invoicing, and integrations with popular accounting software. Business accounts have no monthly fees for startups.",
+      "No. Because payments settle in stablecoins rather than through traditional banking rails, there is no underwriting process. Sign up, connect your wallet, and start accepting payments in minutes.",
   },
 ];
 
@@ -67,17 +67,20 @@ function FAQAccordionItem({
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={answerId}
-        className="w-full flex items-center justify-between py-6 text-left cursor-pointer group"
+        className="group flex w-full cursor-pointer items-center justify-between py-6 text-left"
       >
-        <span className="text-base sm:text-lg font-medium text-foreground pr-8">
+        <span className="pr-8 text-base font-medium text-foreground sm:text-lg">
           {item.question}
         </span>
-        <div className="shrink-0 w-6 h-6 flex items-center justify-center">
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center">
           <motion.div
             animate={{ rotate: isOpen ? 45 : 0 }}
             transition={{ duration: 0.2, ease }}
           >
-            <Plus className="w-5 h-5 text-foreground/60 group-hover:text-foreground transition-colors" aria-hidden="true" />
+            <Plus
+              className="h-5 w-5 text-foreground/60 transition-colors group-hover:text-foreground"
+              aria-hidden="true"
+            />
           </motion.div>
         </div>
       </button>
@@ -93,7 +96,7 @@ function FAQAccordionItem({
             transition={{ duration: 0.3, ease }}
             className="overflow-hidden"
           >
-            <p className="pb-6 text-foreground/60 leading-relaxed max-w-2xl">
+            <p className="max-w-2xl pb-6 leading-relaxed text-foreground/60">
               {item.answer}
             </p>
           </motion.div>
@@ -107,16 +110,16 @@ export function FAQ(): ReactNode {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="relative w-full bg-background py-24 sm:py-32 overflow-hidden">
+    <section className="relative w-full overflow-hidden bg-background py-24 sm:py-32">
       <div className="relative mx-auto max-w-7xl px-0 xl:px-12">
         <div className="px-8 sm:px-12">
-          <div className="max-w-2xl mb-12">
+          <div className="mb-12 max-w-2xl">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease }}
-              className="text-3xl sm:text-4xl lg:text-5xl font-medium font-serif leading-tight text-foreground"
+              className="font-serif text-3xl font-medium leading-tight text-foreground sm:text-4xl lg:text-5xl"
             >
               Frequently asked questions
             </motion.h2>
@@ -127,7 +130,7 @@ export function FAQ(): ReactNode {
               transition={{ duration: 0.5, delay: 0.1, ease }}
               className="mt-4 text-foreground/60"
             >
-              Everything you need to know about Finaro.
+              Everything you need to know about PayVantage.
             </motion.p>
           </div>
 
@@ -150,15 +153,15 @@ export function FAQ(): ReactNode {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2, ease }}
-            className="mt-12 flex flex-col sm:flex-row sm:items-center gap-4"
+            className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center"
           >
             <p className="text-foreground/60">Still have questions?</p>
             <a
-              href="#contact"
-              className="group inline-flex items-center gap-2 text-foreground font-medium hover:opacity-70 transition-opacity"
+              href="mailto:support@payvantage.io"
+              className="group inline-flex items-center gap-2 font-medium text-foreground transition-opacity hover:opacity-70"
             >
               Get in touch
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </a>
           </motion.div>
         </div>

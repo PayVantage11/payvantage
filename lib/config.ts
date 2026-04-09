@@ -2,42 +2,39 @@
  * ============================================================================
  * SITE CONFIGURATION
  * ============================================================================
- *
- * Customize your landing page by editing the values below.
- * All text, links, and settings are centralized here for easy editing.
  */
 
 export const siteConfig = {
-  name: "Finaro",
-  tagline: "Modern Banking for Modern Business",
+  name: "PayVantage",
+  tagline: "The High-Risk Payment Gateway Powered by Stablecoins",
   description:
-    "The financial platform that grows with you. From personal accounts to enterprise solutions, manage your money with confidence.",
-  url: "https://finaro.com",
-  twitter: "@finaro",
+    "Accept payments without underwriting delays, chargebacks, or rolling reserves. PayVantage uses card-to-crypto onramping and stablecoin settlement for instant, irreversible payments.",
+  url: "https://payvantage.io",
+  twitter: "@payvantage",
 
   nav: {
     cta: {
       text: "Get Started",
-      href: "#",
+      href: "/signup",
     },
     signIn: {
       text: "Sign in",
-      href: "#",
+      href: "/login",
     },
   },
 } as const;
 
 export const heroConfig = {
   headline: {
-    line1: "Banking that",
-    line2: "works for you",
+    line1: "Payments that",
+    line2: "just work",
   },
   description:
-    "The financial platform that grows with you. From personal accounts to enterprise solutions.",
+    "The high-risk payment gateway powered by stablecoins. No underwriting, instant settlement, zero chargebacks.",
   cta: {
     primary: {
-      text: "Open an Account",
-      href: "#",
+      text: "Start Accepting Payments",
+      href: "/signup",
     },
     secondary: {
       text: "Book a Demo",
@@ -47,23 +44,23 @@ export const heroConfig = {
 } as const;
 
 export const trustedByConfig = {
-  title: "Trusted by industry leaders",
+  title: "Trusted by high-risk merchants worldwide",
 } as const;
 
 export const featureCardsConfig = {
   title: "The new standard",
-  subtitle: "for modern banking",
+  subtitle: "for high-risk payments",
 } as const;
 
 export const featureHighlightConfig = {
   features: [
     {
       icon: "trending-up",
-      text: "Real-time analytics and insights for smarter decisions.",
+      text: "Real-time settlement tracking and stablecoin balance monitoring.",
     },
     {
       icon: "message-square",
-      text: "Ask questions about your finances in plain English.",
+      text: "Instant webhook notifications for every payment event.",
     },
   ],
 } as const;
@@ -74,20 +71,20 @@ export const principlesConfig = {
 
 export const statsConfig = {
   stats: [
-    { value: 5, suffix: "B+", prefix: "$", label: "Processed annually" },
+    { value: 1.2, suffix: "B+", prefix: "$", label: "Settled in stablecoins" },
     { value: 99.9, suffix: "%", label: "Uptime guarantee" },
-    { value: 150, suffix: "+", label: "Countries supported" },
-    { value: 2, suffix: "M+", label: "Active users" },
+    { value: 85, suffix: "+", label: "Countries supported" },
+    { value: 12, suffix: "K+", label: "Active merchants" },
   ],
 } as const;
 
 export const testimonialsConfig = {
-  title: "Trusted by Finance Leaders",
+  title: "Trusted by Merchants Everywhere",
 } as const;
 
 export const pricingConfig = {
-  title: "Plans that grow with you",
-  trustBadge: "Trusted by 50,000+ businesses",
+  title: "Simple, transparent pricing",
+  trustBadge: "Trusted by 12,000+ merchants",
 } as const;
 
 export const faqConfig = {
@@ -96,14 +93,15 @@ export const faqConfig = {
     text: "Still have questions?",
     cta: {
       text: "Contact Support",
-      href: "mailto:support@finaro.com",
+      href: "mailto:support@payvantage.io",
     },
   },
 } as const;
 
 export const blogConfig = {
   title: "Latest from our blog",
-  description: "Insights, guides, and news to help you make smarter financial decisions.",
+  description:
+    "Insights on high-risk payments, stablecoin settlement, and merchant growth strategies.",
   cta: {
     text: "View all articles",
     href: "#",
@@ -111,27 +109,28 @@ export const blogConfig = {
 } as const;
 
 export const finalCtaConfig = {
-  headline: "Ready to transform your finances?",
-  description: "Join thousands of businesses already using Finaro to manage their money smarter.",
+  headline: "Ready to accept payments without limits?",
+  description:
+    "Join thousands of merchants already using PayVantage for instant, chargeback-free stablecoin settlement.",
   cta: {
     text: "Get Started Free",
-    href: "#",
+    href: "/signup",
   },
 } as const;
 
 export const footerConfig = {
   description:
-    "The financial platform built for modern businesses. Secure, fast, and designed to scale with you.",
+    "The high-risk payment gateway built on stablecoins. Instant settlement, zero chargebacks, and no rolling reserves.",
   cta: {
-    text: "Open an Account",
-    href: "#",
+    text: "Start Accepting Payments",
+    href: "/signup",
   },
   links: {
     product: [
-      { label: "Personal", href: "#" },
-      { label: "Business", href: "#" },
+      { label: "Merchants", href: "#" },
       { label: "Enterprise", href: "#" },
-      { label: "API", href: "#" },
+      { label: "Integrations", href: "#" },
+      { label: "API Docs", href: "#" },
     ],
     company: [
       { label: "About", href: "#" },
@@ -146,20 +145,18 @@ export const footerConfig = {
     ],
   },
   contact: {
-    location: "San Francisco",
-    address: "548 Market St, Suite 95000\nSan Francisco, CA 94104",
-    hours: "Mon-Fri 9:00 am - 6:00 pm (PST)",
-    email: "hello@finaro.com",
+    location: "Miami",
+    address: "1395 Brickell Ave, Suite 800\nMiami, FL 33131",
+    hours: "Mon-Fri 9:00 am - 6:00 pm (EST)",
+    email: "hello@payvantage.io",
   },
-  copyright: `© ${new Date().getFullYear()} Finaro Inc. All rights reserved.`,
+  copyright: `© ${new Date().getFullYear()} PayVantage Inc. All rights reserved.`,
 } as const;
 
 /**
  * ============================================================================
  * FEATURE FLAGS
  * ============================================================================
- *
- * Toggle features on/off without touching component code.
  */
 export const features = {
   smoothScroll: true,
@@ -173,9 +170,6 @@ export const features = {
  * ============================================================================
  * THEME CONFIGURATION
  * ============================================================================
- *
- * Colors are defined in globals.css using CSS custom properties.
- * This config controls which theme features are enabled.
  */
 export const themeConfig = {
   defaultTheme: "system" as "light" | "dark" | "system",
