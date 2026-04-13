@@ -35,7 +35,7 @@ export default function SignupPage(): ReactNode {
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/dashboard/onboarding");
   }
 
   return (

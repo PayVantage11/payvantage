@@ -1,30 +1,19 @@
 "use client";
 
 import { DataTable, StatusBadge } from "@/components/dashboard/data-table";
-import { useState, type ReactNode } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { Loader2 } from "lucide-react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 type Transaction = {
   id: string;
-  amount: string;
+  amount: number;
   currency: string;
   status: "completed" | "pending" | "failed";
-  customer: string;
-  payramId: string;
-  date: string;
+  customer_email: string | null;
+  payram_reference_id: string | null;
+  created_at: string;
 };
-
-const allTransactions: Transaction[] = [
-  { id: "txn_1a2b3c", amount: "$249.99", currency: "USDC", status: "completed", customer: "john@example.com", payramId: "pr_abc123", date: "2026-04-09" },
-  { id: "txn_4d5e6f", amount: "$89.00", currency: "USDT", status: "completed", customer: "jane@example.com", payramId: "pr_def456", date: "2026-04-09" },
-  { id: "txn_7g8h9i", amount: "$1,200.00", currency: "USDC", status: "pending", customer: "bob@example.com", payramId: "pr_ghi789", date: "2026-04-08" },
-  { id: "txn_0j1k2l", amount: "$45.50", currency: "USDC", status: "failed", customer: "alice@example.com", payramId: "pr_jkl012", date: "2026-04-08" },
-  { id: "txn_3m4n5o", amount: "$599.00", currency: "USDT", status: "completed", customer: "charlie@example.com", payramId: "pr_mno345", date: "2026-04-07" },
-  { id: "txn_6p7q8r", amount: "$150.00", currency: "USDC", status: "completed", customer: "dave@example.com", payramId: "pr_pqr678", date: "2026-04-07" },
-  { id: "txn_9s0t1u", amount: "$75.25", currency: "USDT", status: "pending", customer: "eve@example.com", payramId: "pr_stu901", date: "2026-04-06" },
-  { id: "txn_2v3w4x", amount: "$320.00", currency: "USDC", status: "completed", customer: "frank@example.com", payramId: "pr_vwx234", date: "2026-04-06" },
-  { id: "txn_5y6z7a", amount: "$999.99", currency: "USDC", status: "completed", customer: "grace@example.com", payramId: "pr_yza567", date: "2026-04-05" },
-  { id: "txn_8b9c0d", amount: "$25.00", currency: "USDT", status: "failed", customer: "hank@example.com", payramId: "pr_bcd890", date: "2026-04-05" },
-];
 
 type StatusFilter = "all" | "completed" | "pending" | "failed";
 
@@ -33,24 +22,24 @@ const columns = [
     key: "id",
     header: "Transaction ID",
     render: (row: Transaction) => (
-      <span className="font-mono text-xs">{row.id}</span>
+      <span className="font-mono text-xs">{row.id.slice(0, 8)}...</span>
     ),
   },
   {
-    key: "customer",
+    key: "customer_email",
     header: "Customer",
-    render: (row: Transaction) => row.customer,
+    render: (row: Transaction) => row.customer_email ?? "—",
   },
   {
     key: "amount",
     header: "Amount",
     render: (row: Transaction) => (
-      <span className="font-medium">{row.amount}</span>
+      <span className="font-medium">${Number(row.amount).toFixed(2)}</span>
     ),
   },
   {
     key: "currency",
-    header: "Settled In",
+    header: "Currency",
     render: (row: Transaction) => (
       <span className="rounded bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
         {row.currency}
@@ -63,28 +52,57 @@ const columns = [
     render: (row: Transaction) => <StatusBadge status={row.status} />,
   },
   {
-    key: "payramId",
-    header: "PayRam ID",
+    key: "payram_reference_id",
+    header: "PayRam Ref",
     render: (row: Transaction) => (
       <span className="font-mono text-xs text-muted-foreground">
-        {row.payramId}
+        {row.payram_reference_id
+          ? `${row.payram_reference_id.slice(0, 12)}...`
+          : "—"}
       </span>
     ),
   },
   {
-    key: "date",
+    key: "created_at",
     header: "Date",
-    render: (row: Transaction) => row.date,
+    render: (row: Transaction) =>
+      new Date(row.created_at).toLocaleDateString(),
   },
 ];
 
 export default function TransactionsPage(): ReactNode {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<StatusFilter>("all");
+
+  const loadTransactions = useCallback(async () => {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("transactions")
+      .select(
+        "id, amount, currency, status, customer_email, payram_reference_id, created_at"
+      )
+      .order("created_at", { ascending: false });
+    setTransactions((data ?? []) as Transaction[]);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
 
   const filtered =
     filter === "all"
-      ? allTransactions
-      : allTransactions.filter((t) => t.status === filter);
+      ? transactions
+      : transactions.filter((t) => t.status === filter);
+
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -113,11 +131,21 @@ export default function TransactionsPage(): ReactNode {
         ))}
       </div>
 
-      <DataTable
-        columns={columns}
-        data={filtered}
-        emptyMessage="No transactions match the selected filter."
-      />
+      {filtered.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={filtered}
+          emptyMessage="No transactions match the selected filter."
+        />
+      ) : (
+        <div className="rounded-xl border border-dashed border-border py-12 text-center">
+          <p className="text-sm text-muted-foreground">
+            {filter === "all"
+              ? "No transactions yet."
+              : "No transactions match the selected filter."}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

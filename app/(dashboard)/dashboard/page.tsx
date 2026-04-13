@@ -1,102 +1,88 @@
 import { DataTable, StatusBadge } from "@/components/dashboard/data-table";
 import { StatCard } from "@/components/dashboard/stat-card";
+import { createClient } from "@/utils/supabase/server";
 import { Activity, CreditCard, DollarSign, Wallet } from "lucide-react";
 import type { ReactNode } from "react";
 
-type Transaction = {
-  id: string;
-  amount: string;
-  currency: string;
-  status: "completed" | "pending" | "failed";
-  customer: string;
-  date: string;
-};
+export default async function DashboardOverview(): Promise<ReactNode> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-const mockTransactions: Transaction[] = [
-  {
-    id: "txn_1a2b3c",
-    amount: "$249.99",
-    currency: "USDC",
-    status: "completed",
-    customer: "john@example.com",
-    date: "2026-04-09",
-  },
-  {
-    id: "txn_4d5e6f",
-    amount: "$89.00",
-    currency: "USDT",
-    status: "completed",
-    customer: "jane@example.com",
-    date: "2026-04-09",
-  },
-  {
-    id: "txn_7g8h9i",
-    amount: "$1,200.00",
-    currency: "USDC",
-    status: "pending",
-    customer: "bob@example.com",
-    date: "2026-04-08",
-  },
-  {
-    id: "txn_0j1k2l",
-    amount: "$45.50",
-    currency: "USDC",
-    status: "failed",
-    customer: "alice@example.com",
-    date: "2026-04-08",
-  },
-  {
-    id: "txn_3m4n5o",
-    amount: "$599.00",
-    currency: "USDT",
-    status: "completed",
-    customer: "charlie@example.com",
-    date: "2026-04-07",
-  },
-];
+  const { data: transactions } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("merchant_id", user!.id)
+    .order("created_at", { ascending: false })
+    .limit(5);
 
-const columns = [
-  {
-    key: "id",
-    header: "Transaction ID",
-    render: (row: Transaction) => (
-      <span className="font-mono text-xs">{row.id}</span>
-    ),
-  },
-  {
-    key: "customer",
-    header: "Customer",
-    render: (row: Transaction) => row.customer,
-  },
-  {
-    key: "amount",
-    header: "Amount",
-    render: (row: Transaction) => (
-      <span className="font-medium">{row.amount}</span>
-    ),
-  },
-  {
-    key: "currency",
-    header: "Settled In",
-    render: (row: Transaction) => (
-      <span className="rounded bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
-        {row.currency}
-      </span>
-    ),
-  },
-  {
-    key: "status",
-    header: "Status",
-    render: (row: Transaction) => <StatusBadge status={row.status} />,
-  },
-  {
-    key: "date",
-    header: "Date",
-    render: (row: Transaction) => row.date,
-  },
-];
+  const { data: allTx } = await supabase
+    .from("transactions")
+    .select("amount, status")
+    .eq("merchant_id", user!.id);
 
-export default function DashboardOverview(): ReactNode {
+  const rows = transactions ?? [];
+  const all = allTx ?? [];
+
+  const totalVolume = all
+    .filter((t) => t.status === "completed")
+    .reduce((sum, t) => sum + Number(t.amount), 0);
+
+  const totalCount = all.length;
+  const completedCount = all.filter((t) => t.status === "completed").length;
+  const successRate =
+    totalCount > 0 ? ((completedCount / totalCount) * 100).toFixed(1) : "0";
+
+  const columns = [
+    {
+      key: "id",
+      header: "Transaction ID",
+      render: (row: (typeof rows)[0]) => (
+        <span className="font-mono text-xs">
+          {row.id.slice(0, 8)}...
+        </span>
+      ),
+    },
+    {
+      key: "customer_email",
+      header: "Customer",
+      render: (row: (typeof rows)[0]) =>
+        row.customer_email ?? "—",
+    },
+    {
+      key: "amount",
+      header: "Amount",
+      render: (row: (typeof rows)[0]) => (
+        <span className="font-medium">
+          ${Number(row.amount).toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      key: "currency",
+      header: "Currency",
+      render: (row: (typeof rows)[0]) => (
+        <span className="rounded bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
+          {row.currency}
+        </span>
+      ),
+    },
+    {
+      key: "status",
+      header: "Status",
+      render: (row: (typeof rows)[0]) => (
+        <StatusBadge status={row.status as "completed" | "pending" | "failed"} />
+      ),
+    },
+    {
+      key: "created_at",
+      header: "Date",
+      render: (row: (typeof rows)[0]) =>
+        new Date(row.created_at).toLocaleDateString(),
+    },
+  ];
+
   return (
     <div className="space-y-8">
       <div>
@@ -109,26 +95,26 @@ export default function DashboardOverview(): ReactNode {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Volume"
-          value="$48,239.50"
-          description="+12.5% from last month"
+          value={`$${totalVolume.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+          description="Completed payments"
           icon={DollarSign}
         />
         <StatCard
           title="Transactions"
-          value="342"
-          description="Last 30 days"
+          value={totalCount.toString()}
+          description="All time"
           icon={CreditCard}
         />
         <StatCard
-          title="USDC Balance"
-          value="$12,480.00"
-          description="Ready to withdraw"
+          title="Completed"
+          value={completedCount.toString()}
+          description="Successful payments"
           icon={Wallet}
         />
         <StatCard
           title="Success Rate"
-          value="98.2%"
-          description="Last 30 days"
+          value={`${successRate}%`}
+          description="All time"
           icon={Activity}
         />
       </div>
@@ -137,7 +123,15 @@ export default function DashboardOverview(): ReactNode {
         <h2 className="mb-4 text-lg font-semibold text-foreground">
           Recent Transactions
         </h2>
-        <DataTable columns={columns} data={mockTransactions} />
+        {rows.length > 0 ? (
+          <DataTable columns={columns} data={rows} />
+        ) : (
+          <div className="rounded-xl border border-dashed border-border py-12 text-center">
+            <p className="text-sm text-muted-foreground">
+              No transactions yet. Share your API keys with your integration to start.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

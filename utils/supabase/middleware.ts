@@ -5,7 +5,6 @@ export async function updateSession(request: NextRequest) {
   const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"];
   const supabaseAnonKey = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
 
-  // If Supabase isn't configured, redirect protected routes to login
   if (
     !supabaseUrl ||
     !supabaseAnonKey ||
@@ -39,14 +38,28 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { pathname } = request.nextUrl;
   const isProtected =
-    request.nextUrl.pathname.startsWith("/dashboard") ||
-    request.nextUrl.pathname.startsWith("/admin");
+    pathname.startsWith("/dashboard") || pathname.startsWith("/admin");
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
+  }
+
+  if (user && isProtected && !pathname.includes("/onboarding")) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarded, role")
+      .eq("id", user.id)
+      .single();
+
+    if (profile && !profile.onboarded && profile.role !== "admin" && pathname.startsWith("/dashboard")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard/onboarding";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

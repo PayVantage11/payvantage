@@ -5,6 +5,7 @@ import {
   CreditCard,
   Key,
   LayoutDashboard,
+  Link2,
   LogOut,
   Plug,
   Settings,
@@ -16,6 +17,7 @@ import { createClient } from "@/utils/supabase/client";
 
 const navItems = [
   { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Payment Links", href: "/dashboard/payments", icon: Link2 },
   { label: "Transactions", href: "/dashboard/transactions", icon: CreditCard },
   { label: "API Keys", href: "/dashboard/api-keys", icon: Key },
   { label: "Integrations", href: "/dashboard/integrations", icon: Plug },
@@ -24,8 +26,10 @@ const navItems = [
 
 export function Sidebar({
   user,
+  onboarded = true,
 }: {
   user: { email: string; id: string };
+  onboarded?: boolean;
 }): ReactNode {
   const pathname = usePathname();
   const router = useRouter();
@@ -35,6 +39,8 @@ export function Sidebar({
     await supabase.auth.signOut();
     router.push("/login");
   }
+
+  const isOnboarding = pathname.includes("/onboarding");
 
   return (
     <aside className="flex w-64 flex-col border-r border-border bg-muted/30">
@@ -48,27 +54,34 @@ export function Sidebar({
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/dashboard" && pathname.startsWith(item.href));
+        {isOnboarding ? (
+          <div className="px-3 py-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Setting up your account...
+          </div>
+        ) : (
+          navItems.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-foreground/10 text-foreground"
-                  : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-              )}
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </Link>
-          );
-        })}
+            return (
+              <Link
+                key={item.href}
+                href={onboarded ? item.href : "#"}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-foreground/10 text-foreground"
+                    : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
+                  !onboarded && "pointer-events-none opacity-50"
+                )}
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })
+        )}
       </nav>
 
       <div className="border-t border-border p-4">

@@ -1,13 +1,81 @@
 import { StatCard } from "@/components/dashboard/stat-card";
-import {
-  Activity,
-  DollarSign,
-  Server,
-  Users,
-} from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
+import { Activity, DollarSign, Server, Users } from "lucide-react";
 import type { ReactNode } from "react";
 
-export default function AdminDashboard(): ReactNode {
+export default async function AdminDashboard(): Promise<ReactNode> {
+  const supabase = await createClient();
+
+  const { count: merchantCount } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "merchant");
+
+  const { count: approvedCount } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "merchant")
+    .eq("approved", true);
+
+  const { data: allTx } = await supabase
+    .from("transactions")
+    .select("amount, status");
+
+  const all = allTx ?? [];
+  const totalVolume = all
+    .filter((t) => t.status === "completed")
+    .reduce((sum, t) => sum + Number(t.amount), 0);
+  const totalCount = all.length;
+  const completedCount = all.filter((t) => t.status === "completed").length;
+  const successRate =
+    totalCount > 0 ? ((completedCount / totalCount) * 100).toFixed(1) : "—";
+
+  const volumeByStatus = [
+    {
+      label: "Completed",
+      value: `$${all
+        .filter((t) => t.status === "completed")
+        .reduce((s, t) => s + Number(t.amount), 0)
+        .toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+      pct:
+        totalCount > 0
+          ? Math.round(
+              (all.filter((t) => t.status === "completed").length /
+                totalCount) *
+                100
+            )
+          : 0,
+    },
+    {
+      label: "Pending",
+      value: `$${all
+        .filter((t) => t.status === "pending")
+        .reduce((s, t) => s + Number(t.amount), 0)
+        .toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+      pct:
+        totalCount > 0
+          ? Math.round(
+              (all.filter((t) => t.status === "pending").length / totalCount) *
+                100
+            )
+          : 0,
+    },
+    {
+      label: "Failed",
+      value: `$${all
+        .filter((t) => t.status === "failed")
+        .reduce((s, t) => s + Number(t.amount), 0)
+        .toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+      pct:
+        totalCount > 0
+          ? Math.round(
+              (all.filter((t) => t.status === "failed").length / totalCount) *
+                100
+            )
+          : 0,
+    },
+  ];
+
   return (
     <div className="space-y-8">
       <div>
@@ -22,19 +90,19 @@ export default function AdminDashboard(): ReactNode {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Platform Volume"
-          value="$2.4M"
-          description="Last 30 days"
+          value={`$${totalVolume.toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+          description="Completed payments"
           icon={DollarSign}
         />
         <StatCard
-          title="Active Merchants"
-          value="1,248"
-          description="+38 this month"
+          title="Registered Merchants"
+          value={(merchantCount ?? 0).toString()}
+          description={`${approvedCount ?? 0} approved`}
           icon={Users}
         />
         <StatCard
           title="Success Rate"
-          value="99.1%"
+          value={`${successRate}%`}
           description="Platform-wide"
           icon={Activity}
         />
@@ -52,10 +120,7 @@ export default function AdminDashboard(): ReactNode {
             Volume Breakdown
           </h3>
           <div className="space-y-3">
-            {[
-              { label: "USDC Settlements", value: "$1.8M", pct: 75 },
-              { label: "USDT Settlements", value: "$600K", pct: 25 },
-            ].map((item) => (
+            {volumeByStatus.map((item) => (
               <div key={item.label}>
                 <div className="mb-1 flex items-center justify-between text-sm">
                   <span className="text-foreground">{item.label}</span>
