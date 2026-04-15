@@ -3,7 +3,8 @@
 import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import { useState, useRef, useEffect, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
 
 type NavItem = {
   label: string;
@@ -56,8 +57,10 @@ const ease = [0.23, 1, 0.32, 1] as const;
 
 function DesktopDropdownLink({
   item,
+  onNavigate,
 }: {
   item: { label: string; description: string; href: string };
+  onNavigate?: () => void;
 }): ReactNode {
   const className =
     "block w-full rounded-sm px-3 py-2.5 text-left transition-colors hover:bg-white/10";
@@ -69,15 +72,17 @@ function DesktopDropdownLink({
       </p>
     </>
   );
+  const linkClickProps = onNavigate ? { onClick: onNavigate } : {};
+
   if (item.href.startsWith("/")) {
     return (
-      <Link href={item.href} className={className}>
+      <Link href={item.href} className={className} {...linkClickProps}>
         {body}
       </Link>
     );
   }
   return (
-    <a href={item.href} className={className}>
+    <a href={item.href} className={className} {...linkClickProps}>
       {body}
     </a>
   );
@@ -143,12 +148,14 @@ function DesktopDropdown({
   isOpen,
   onOpen,
   onClose,
+  onSelectItem,
 }: {
   label: string;
   items: { label: string; description: string; href: string }[];
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+  onSelectItem: () => void;
 }): ReactNode {
   return (
     <div
@@ -186,7 +193,11 @@ function DesktopDropdown({
             >
               <div className="flex flex-col gap-1">
                 {items.map((item) => (
-                  <DesktopDropdownLink key={item.label} item={item} />
+                  <DesktopDropdownLink
+                    key={item.label}
+                    item={item}
+                    onNavigate={onSelectItem}
+                  />
                 ))}
               </div>
             </motion.div>
@@ -254,6 +265,7 @@ function MobileExpandable({
 }
 
 export function Header(): ReactNode {
+  const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
@@ -263,6 +275,14 @@ export function Header(): ReactNode {
     setMobileMenuOpen(false);
     setMobileExpanded(null);
   };
+
+  const dismissDesktopMenu = useCallback(() => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setActiveMenu(null);
+  }, []);
 
   const handleMenuOpen = (label: string) => {
     if (closeTimeoutRef.current) {
@@ -277,6 +297,10 @@ export function Header(): ReactNode {
       setActiveMenu(null);
     }, 220);
   };
+
+  useEffect(() => {
+    dismissDesktopMenu();
+  }, [pathname, dismissDesktopMenu]);
 
   useEffect(() => {
     return () => {
@@ -338,6 +362,7 @@ export function Header(): ReactNode {
                   isOpen={activeMenu === link.label}
                   onOpen={() => handleMenuOpen(link.label)}
                   onClose={handleMenuClose}
+                  onSelectItem={dismissDesktopMenu}
                 />
               ) : (
                 <Link
