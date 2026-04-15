@@ -164,6 +164,6 @@ export const features = {
  * ============================================================================
  */
 export const themeConfig = {
-  defaultTheme: "system" as "light" | "dark" | "system",
-  enableSystemTheme: true,
+  defaultTheme: "dark" as const,
+  enableSystemTheme: false,
 } as const;

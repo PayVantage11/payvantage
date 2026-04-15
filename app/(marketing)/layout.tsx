@@ -1,6 +1,5 @@
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
-import { ThemeSwitch } from "@/components/theme-switch";
 import type { ReactNode } from "react";
 
 export default function MarketingLayout({
@@ -11,7 +10,6 @@ export default function MarketingLayout({
   return (
     <>
       <Header />
-      <ThemeSwitch />
       {children}
       <Footer />
     </>

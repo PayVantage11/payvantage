@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import { motion } from "motion/react";
 import * as THREE from "three";
 
@@ -147,9 +146,6 @@ export function FinalCTA(): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const frameIdRef = useRef<number>(0);
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -169,7 +165,7 @@ export function FinalCTA(): ReactNode {
     const uniforms = {
       iTime: { value: 0 },
       iResolution: { value: new THREE.Vector2(width, height) },
-      isDark: { value: isDark ? 1.0 : 0.0 },
+      isDark: { value: 1.0 },
     };
 
     const material = new THREE.ShaderMaterial({
@@ -208,7 +204,7 @@ export function FinalCTA(): ReactNode {
         container.removeChild(renderer.domElement);
       }
     };
-  }, [isDark]);
+  }, []);
 
   return (
     <section className="relative flex min-h-[20vh] w-full items-center justify-center overflow-hidden">

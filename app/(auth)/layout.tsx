@@ -1,5 +1,4 @@
 import { AuthSplitShell } from "@/components/auth-split-shell";
-import { ThemeSwitch } from "@/components/theme-switch";
 import type { ReactNode } from "react";
 
 export default function AuthLayout({
@@ -7,10 +6,5 @@ export default function AuthLayout({
 }: Readonly<{
   children: ReactNode;
 }>): ReactNode {
-  return (
-    <>
-      <ThemeSwitch />
-      <AuthSplitShell>{children}</AuthSplitShell>
-    </>
-  );
+  return <AuthSplitShell>{children}</AuthSplitShell>;
 }

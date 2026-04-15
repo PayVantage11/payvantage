@@ -3,14 +3,7 @@
 import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
-import {
-  useState,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-  type ReactNode,
-} from "react";
-import { createPortal } from "react-dom";
+import { useState, useRef, useEffect, type ReactNode } from "react";
 
 type NavItem = {
   label: string;
@@ -157,28 +150,14 @@ function DesktopDropdown({
   onOpen: () => void;
   onClose: () => void;
 }): ReactNode {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const [position, setPosition] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
-
-  useLayoutEffect(() => {
-    if (isOpen && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom,
-        left: rect.left + rect.width / 2,
-      });
-    } else if (!isOpen) {
-      setPosition(null);
-    }
-  }, [isOpen]);
-
   return (
-    <div className="relative" onMouseEnter={onOpen} onMouseLeave={onClose}>
+    <div
+      className="relative z-[1200]"
+      onMouseEnter={onOpen}
+      onMouseLeave={onClose}
+    >
       <button
-        ref={buttonRef}
+        type="button"
         className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -191,38 +170,28 @@ function DesktopDropdown({
           <ChevronDown className="h-4 w-4" aria-hidden="true" />
         </motion.div>
       </button>
-      {typeof window !== "undefined" &&
-        createPortal(
-          <AnimatePresence>
-            {isOpen && position && (
-              <div
-                className="fixed z-2000 pt-2"
-                style={{
-                  top: position.top,
-                  left: position.left,
-                  transform: "translateX(-50%)",
-                }}
-                onMouseEnter={onOpen}
-                onMouseLeave={onClose}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.2, ease }}
-                  className="flex items-stretch gap-2 overflow-hidden rounded-2xl border border-border bg-background p-2 shadow-lg"
-                >
-                  <div className="min-w-56">
-                    {items.map((item) => (
-                      <DropdownItem key={item.label} item={item} />
-                    ))}
-                  </div>
-                </motion.div>
+      <AnimatePresence>
+        {isOpen ? (
+          <div
+            className="absolute left-1/2 top-full z-[1201] min-w-[14rem] -translate-x-1/2 pt-2"
+            role="presentation"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 8, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.96 }}
+              transition={{ duration: 0.2, ease }}
+              className="overflow-hidden rounded-2xl border border-border bg-background p-2 shadow-lg"
+            >
+              <div className="min-w-56">
+                {items.map((item) => (
+                  <DropdownItem key={item.label} item={item} />
+                ))}
               </div>
-            )}
-          </AnimatePresence>,
-          document.body
-        )}
+            </motion.div>
+          </div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }
@@ -305,7 +274,7 @@ export function Header(): ReactNode {
   const handleMenuClose = () => {
     closeTimeoutRef.current = setTimeout(() => {
       setActiveMenu(null);
-    }, 100);
+    }, 220);
   };
 
   useEffect(() => {

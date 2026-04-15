@@ -7,7 +7,7 @@ A premium Next.js 15+ landing page template designed for fintech, banking, and f
 - ✅ **Next.js 15+** with App Router
 - ✅ **TypeScript** (strict mode)
 - ✅ **Tailwind CSS v4** with design tokens
-- ✅ **Dark Mode** via next-themes
+- ✅ **Dark theme** (fixed; no light mode flash)
 - ✅ **Motion** via motion/react with reduced-motion support
 - ✅ **Smooth Scroll** via Lenis with feature flag
 - ✅ **SEO Ready** - metadata, Open Graph, Twitter cards
@@ -78,11 +78,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 │   ├── hero.tsx           # Hero section
 │   ├── pricing.tsx        # Pricing cards
 │   ├── principles.tsx     # Principles section
-│   ├── providers.tsx      # Theme & scroll providers
+│   ├── providers.tsx      # Scroll & motion providers
 │   ├── smooth-scroll.tsx  # Lenis smooth scroll
 │   ├── stats.tsx          # Stats section
 │   ├── testimonials-slider.tsx # Testimonials
-│   ├── theme-switch.tsx   # Theme toggle button
 │   └── trusted-by.tsx     # Logo carousel
 ├── lib/
 │   ├── config.ts          # Site config & feature flags
