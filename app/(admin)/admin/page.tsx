@@ -146,7 +146,7 @@ export default async function AdminDashboard(): Promise<ReactNode> {
           <div className="space-y-3">
             {[
               { service: "Payment API", status: "Operational" },
-              { service: "PayRam Gateway", status: "Operational" },
+              { service: "Card payment gateway", status: "Operational" },
               { service: "Webhook Delivery", status: "Operational" },
               { service: "Dashboard", status: "Operational" },
             ].map((item) => (

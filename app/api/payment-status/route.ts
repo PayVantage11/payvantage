@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Look up by transaction_id first, then by provider_order_id, then legacy payram_reference_id
+    // Look up by transaction_id first, then by provider_order_id, then legacy provider reference column
     let transaction: Record<string, unknown> | null = null;
 
     if (transactionId) {

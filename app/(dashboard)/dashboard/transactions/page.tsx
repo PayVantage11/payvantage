@@ -53,7 +53,7 @@ const columns = [
   },
   {
     key: "payram_reference_id",
-    header: "PayRam Ref",
+    header: "Provider ref",
     render: (row: Transaction) => (
       <span className="font-mono text-xs text-muted-foreground">
         {row.payram_reference_id

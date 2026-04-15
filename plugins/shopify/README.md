@@ -13,8 +13,8 @@ This guide describes the architecture for integrating PayVantage as a custom pay
 └─────────────┘     └──────────────────┘     └─────────────────┘
        │                     │                        │
        │              ┌──────┴──────┐          ┌──────┴──────┐
-       │              │  Redirect   │          │  PayRam     │
-       │              │  Customer   │          │  Checkout   │
+       │              │  Redirect   │          │  Hosted     │
+       │              │  Customer   │          │  checkout   │
        │              └─────────────┘          └─────────────┘
        │                                             │
        │              ┌──────────────┐               │
@@ -73,9 +73,9 @@ PAYVANTAGE_SECRET_KEY=pv_sec_...
      "merchant_api_key": "pk_live_..."
    }
    ```
-3. **Customer is redirected** to the PayRam checkout URL returned in the response
-4. **Customer completes payment** → card is charged, funds converted to stablecoins
-5. **PayRam sends webhook** to `PAYVANTAGE_API_URL/api/webhooks/payram`
+3. **Customer is redirected** to the hosted checkout URL returned in the API response
+4. **Customer completes payment** → card is charged per your PayVantage configuration
+5. **The payment provider** delivers webhooks to the PayVantage webhook URL configured for your deployment
 6. **PayVantage sends webhook** to your Shopify app endpoint
 7. **App marks order as paid** via the Shopify Admin API
 

@@ -276,18 +276,19 @@ export function Hero(): ReactNode {
               transition={{ duration: 0.8, delay: 0.5, ease }}
               className="text-4xl sm:text-5xl md:text-6xl font-medium font-serif text-white text-left lg:text-center leading-tighter tracking-tight max-w-3xl"
             >
-              The high-risk payment<br/> gateway that just works
+              Multi-Rail Payment Processing
+              <br />
+              for High-Risk Merchants
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.7, ease }}
-              className="mt-5 text-lg text-white/70 text-left lg:text-center max-w-xl"
+              className="mt-5 text-lg text-white/70 text-left lg:text-center max-w-2xl"
             >
-              Traditional high-risk card processing or instant USDC settlement to
-              your wallet — pick the rail that fits. Dedicated support for
-              categories banks avoid.
+              Accept cards the traditional way or settle instantly in USDC — we
+              find the right solution for your business.
             </motion.p>
 
             <motion.div

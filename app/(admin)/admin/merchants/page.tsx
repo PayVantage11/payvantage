@@ -13,7 +13,7 @@ import {
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 const RAIL_OPTIONS = [
-  { value: "payram", label: "PayRam" },
+  { value: "payram", label: "Primary card rail" },
   { value: "inqud", label: "Inqud" },
   { value: "alchemypay", label: "Alchemy Pay" },
 ] as const;

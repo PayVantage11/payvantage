@@ -208,7 +208,7 @@ export async function POST(request: Request) {
       updated_at: new Date().toISOString(),
     };
 
-    // Backward compat: also set payram-specific fields when using payram
+    // Backward compat: populate legacy provider reference fields when using the primary card rail
     if (usedRail === "payram") {
       updateFields.payram_reference_id = paymentResult.providerOrderId;
     }

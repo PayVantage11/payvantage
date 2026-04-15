@@ -10,7 +10,7 @@ export function getPayramClient(): Payram {
 
   if (!apiKey || !baseUrl) {
     throw new Error(
-      "PAYRAM_API_KEY and PAYRAM_API_URL must be set in environment variables"
+      "Card payment provider API credentials (key and base URL) must be set in environment variables."
     );
   }
 
