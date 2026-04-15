@@ -33,8 +33,22 @@ function useCursorDisabled(pathname: string | null): boolean {
 function readBorderRadius(el: HTMLElement): string {
   const r = getComputedStyle(el).borderRadius;
   if (r && r !== "0px") return r.split(" ")[0] ?? r;
-  const h = el.getBoundingClientRect().height;
-  return `${Math.min(9999, h / 2)}px`;
+
+  const rect = el.getBoundingClientRect();
+  const w = rect.width;
+  const h = rect.height;
+  if (w <= 0 || h <= 0) return "9999px";
+
+  // Nearly square controls (icon buttons, chips): keep a circular ring.
+  const minSide = Math.min(w, h);
+  const maxSide = Math.max(w, h);
+  if (maxSide > 0 && minSide / maxSide > 0.88 && h <= 56) {
+    return `${minSide / 2}px`;
+  }
+
+  // Wide links / list rows: small fixed radius so the ring matches boxy UI
+  // (height/2 here used to turn every full-width <a> into a stadium pill).
+  return "6px";
 }
 
 type MorphState = {
