@@ -60,7 +60,7 @@ function DesktopDropdownLink({
   item: { label: string; description: string; href: string };
 }): ReactNode {
   const className =
-    "block rounded-md px-3 py-2.5 transition-colors hover:bg-white/10";
+    "block w-full rounded-sm px-3 py-2.5 text-left transition-colors hover:bg-white/10";
   const body = (
     <>
       <div className="text-sm font-medium text-foreground">{item.label}</div>
