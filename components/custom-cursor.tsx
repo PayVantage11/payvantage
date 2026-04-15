@@ -70,14 +70,25 @@ function readBorderRadius(el: HTMLElement): string {
     return `${minSide / 2}px`;
   }
 
-  // Wide rows (nav, lists): cap radius so the ring stays rectangular, not a stadium.
+  const halfShort = minSide / 2;
+  // rounded-full is often computed as ~half the shorter side (not the literal 9999px).
+  if (declaredPx >= halfShort - 1) {
+    return `${halfShort}px`;
+  }
+
+  // Long nav/list rows: keep a modest radius so the ring does not become a stadium.
   const maxForBar = Math.min(10, Math.max(4, Math.floor(minSide * 0.2)));
+  const elongated = maxSide > 0 && minSide / maxSide < 0.42;
+
   if (declaredPx > 0) {
-    return `${Math.min(declaredPx, maxForBar)}px`;
+    if (elongated && declaredPx < halfShort * 0.55) {
+      return `${Math.min(declaredPx, maxForBar)}px`;
+    }
+    return `${Math.min(declaredPx, halfShort)}px`;
   }
 
   if (maxSide > 0 && minSide / maxSide > 0.88 && h <= 56) {
-    return `${minSide / 2}px`;
+    return `${halfShort}px`;
   }
 
   return `${maxForBar}px`;
