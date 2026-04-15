@@ -30,6 +30,23 @@ function useCursorDisabled(pathname: string | null): boolean {
   return false;
 }
 
+function parseCssLengthToPx(token: string): number {
+  const t = token.trim();
+  if (!t || t === "0") return 0;
+  if (t.endsWith("px")) {
+    const n = Number.parseFloat(t);
+    return Number.isNaN(n) ? 0 : n;
+  }
+  if (t.endsWith("rem")) {
+    const root =
+      Number.parseFloat(getComputedStyle(document.documentElement).fontSize) ||
+      16;
+    const n = Number.parseFloat(t);
+    return Number.isNaN(n) ? 0 : n * root;
+  }
+  return 0;
+}
+
 function readBorderRadius(el: HTMLElement): string {
   const rect = el.getBoundingClientRect();
   const w = rect.width;
@@ -42,11 +59,7 @@ function readBorderRadius(el: HTMLElement): string {
   const raw = getComputedStyle(el).borderRadius.trim();
   const firstToken = raw.split(/[\s,]+/).find((t) => t.length > 0) ?? raw;
 
-  let declaredPx = 0;
-  if (firstToken.endsWith("px")) {
-    const n = Number.parseFloat(firstToken);
-    if (!Number.isNaN(n)) declaredPx = n;
-  }
+  let declaredPx = parseCssLengthToPx(firstToken);
 
   const isIntentionalCircle =
     raw.includes("9999") ||
@@ -211,6 +224,11 @@ export function CustomCursor(): ReactNode {
     <>
       <motion.div
         className="pointer-events-none fixed left-0 top-0 z-[10050] box-border border-2 border-accent/75 bg-transparent shadow-[0_0_20px_rgba(59,130,246,0.12)] dark:border-accent/85 dark:shadow-[0_0_26px_rgba(59,130,246,0.2)]"
+        style={{
+          // Do not spring borderRadius: animating from the default circle (9999) toward
+          // the target leaves long-lived "pill" radii that do not match the hovered control.
+          borderRadius: morph ? morph.radius : "9999px",
+        }}
         initial={false}
         animate={
           morph
@@ -219,14 +237,12 @@ export function CustomCursor(): ReactNode {
                 top: morph.rect.top,
                 width: Math.max(1, morph.rect.width),
                 height: Math.max(1, morph.rect.height),
-                borderRadius: morph.radius,
               }
             : {
                 left: pos.x - 20,
                 top: pos.y - 20,
                 width: 40,
                 height: 40,
-                borderRadius: 9999,
               }
         }
         transition={ringSpring}
