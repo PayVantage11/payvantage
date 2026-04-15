@@ -19,25 +19,22 @@ const navLinks: NavItem[] = [
     items: [
       {
         label: "Traditional Processing",
-        description:
-          "High-risk card processing with fast approvals and competitive rates",
+        description: "High-risk card processing with fast approvals",
         href: "/book-demo",
       },
       {
         label: "USDC Settlement",
-        description:
-          "Accept cards, settle instantly in USDC to your Polygon wallet. Zero chargebacks.",
+        description: "Card checkout with instant USDC settlement",
         href: "/products/instant-settlement",
       },
       {
         label: "WooCommerce Plugin",
-        description:
-          "Install our plugin, enter your Merchant ID, and start accepting payments in minutes",
+        description: "Plugin, Merchant ID, go live in minutes",
         href: "/docs",
       },
       {
         label: "API & SDKs",
-        description: "Setup, requirements, and integration guidance",
+        description: "REST API, webhooks, and integration docs",
         href: "/docs",
       },
     ],
@@ -54,31 +51,24 @@ const navLinks: NavItem[] = [
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
-function DropdownItem({
+function DesktopDropdownLink({
   item,
 }: {
   item: { label: string; description: string; href: string };
 }): ReactNode {
   const className =
-    "block rounded-xl px-4 py-4 transition-colors hover:bg-muted";
-  const body = (
-    <>
-      <div className="text-sm font-medium text-foreground">{item.label}</div>
-      <div className="mt-0.5 text-xs text-muted-foreground">
-        {item.description}
-      </div>
-    </>
-  );
+    "flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted";
+  const inner = <span className="truncate">{item.label}</span>;
   if (item.href.startsWith("/")) {
     return (
-      <Link href={item.href} className={className}>
-        {body}
+      <Link href={item.href} className={className} title={item.description}>
+        {inner}
       </Link>
     );
   }
   return (
-    <a href={item.href} className={className}>
-      {body}
+    <a href={item.href} className={className} title={item.description}>
+      {inner}
     </a>
   );
 }
@@ -152,7 +142,7 @@ function DesktopDropdown({
 }): ReactNode {
   return (
     <div
-      className="relative z-[1200]"
+      className="relative z-[10020]"
       onMouseEnter={onOpen}
       onMouseLeave={onClose}
     >
@@ -173,7 +163,7 @@ function DesktopDropdown({
       <AnimatePresence>
         {isOpen ? (
           <div
-            className="absolute left-1/2 top-full z-[1201] min-w-[14rem] -translate-x-1/2 pt-2"
+            className="absolute left-1/2 top-full z-[10021] min-w-[13.5rem] -translate-x-1/2 pt-2"
             role="presentation"
           >
             <motion.div
@@ -181,11 +171,11 @@ function DesktopDropdown({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.96 }}
               transition={{ duration: 0.2, ease }}
-              className="overflow-hidden rounded-2xl border border-border bg-background p-2 shadow-lg"
+              className="overflow-hidden rounded-2xl border border-border/90 bg-background p-1.5 shadow-xl ring-1 ring-white/10"
             >
-              <div className="min-w-56">
+              <div className="flex flex-col gap-0.5">
                 {items.map((item) => (
-                  <DropdownItem key={item.label} item={item} />
+                  <DesktopDropdownLink key={item.label} item={item} />
                 ))}
               </div>
             </motion.div>
@@ -299,7 +289,7 @@ export function Header(): ReactNode {
         aria-hidden="true"
       />
 
-      <header className="fixed top-0 right-0 left-0 z-1003 hidden mix-blend-exclusion lg:block">
+      <header className="fixed top-0 right-0 left-0 z-[10020] hidden mix-blend-exclusion lg:block">
         <div className="mx-auto flex h-20 w-full items-center justify-between px-6 sm:px-8">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -372,7 +362,7 @@ export function Header(): ReactNode {
         </div>
       </header>
 
-      <header className="fixed top-0 right-0 left-0 z-1003 mix-blend-exclusion lg:hidden">
+      <header className="fixed top-0 right-0 left-0 z-[10020] mix-blend-exclusion lg:hidden">
         <div className="mx-auto flex h-16 w-full items-center justify-between px-6 sm:px-8">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -414,7 +404,7 @@ export function Header(): ReactNode {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed top-0 right-0 left-0 z-1004 bg-background lg:hidden"
+            className="fixed top-0 right-0 left-0 z-[10030] bg-background lg:hidden"
           >
             <div className="flex h-16 w-full items-center justify-between px-6 sm:px-8">
               <Link
