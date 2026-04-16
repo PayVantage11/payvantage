@@ -15,22 +15,27 @@ export default function SignupPage(): ReactNode {
   const [showPassword, setShowPassword] = useState(false);
   const [companyName, setCompanyName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setInfo(null);
     setLoading(true);
 
     const supabase = createClient();
-    const { error: authError } = await supabase.auth.signUp({
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "";
+    const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
           company_name: companyName,
         },
+        emailRedirectTo: `${origin}/auth/callback?next=/dashboard/onboarding`,
       },
     });
 
@@ -40,7 +45,16 @@ export default function SignupPage(): ReactNode {
       return;
     }
 
-    router.push("/dashboard/onboarding");
+    if (data.session) {
+      router.push("/dashboard/onboarding");
+      router.refresh();
+      return;
+    }
+
+    setInfo(
+      "Check your email and confirm your account. After you confirm, you will be sent to onboarding to finish setup."
+    );
+    setLoading(false);
   }
 
   return (
@@ -65,6 +79,11 @@ export default function SignupPage(): ReactNode {
         {error ? (
           <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
             {error}
+          </div>
+        ) : null}
+        {info ? (
+          <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-200">
+            {info}
           </div>
         ) : null}
 

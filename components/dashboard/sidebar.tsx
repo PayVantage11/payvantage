@@ -58,6 +58,19 @@ export function Sidebar({
           <div className="px-3 py-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Setting up your account...
           </div>
+        ) : !onboarded ? (
+          <div className="space-y-2 px-1">
+            <Link
+              href="/dashboard/onboarding"
+              className="flex w-full items-center justify-center rounded-lg bg-foreground px-3 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-foreground/90"
+            >
+              Complete onboarding
+            </Link>
+            <p className="px-2 text-xs leading-relaxed text-muted-foreground">
+              Finish setup to unlock payments, API keys, and the rest of your
+              dashboard.
+            </p>
+          </div>
         ) : (
           navItems.map((item) => {
             const isActive =
@@ -67,13 +80,12 @@ export function Sidebar({
             return (
               <Link
                 key={item.href}
-                href={onboarded ? item.href : "#"}
+                href={item.href}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                   isActive
                     ? "bg-foreground/10 text-foreground"
-                    : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
-                  !onboarded && "pointer-events-none opacity-50"
+                    : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                 )}
               >
                 <item.icon className="h-4 w-4" />

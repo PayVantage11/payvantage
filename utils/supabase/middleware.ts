@@ -52,9 +52,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (user && isProtected && !pathname.includes("/onboarding")) {
+  if (user && isProtected) {
     const sessionProfile = await getSessionProfileForUser(supabase, user.id);
     const isAdmin = isAdminRole(sessionProfile?.role);
+    const isOnboardingRoute =
+      pathname === "/dashboard/onboarding" ||
+      pathname.startsWith("/dashboard/onboarding/");
 
     if (
       isAdmin &&
@@ -66,15 +69,20 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    if (
-      sessionProfile &&
-      !sessionProfile.onboarded &&
-      !isAdmin &&
-      pathname.startsWith("/dashboard")
-    ) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/dashboard/onboarding";
-      return NextResponse.redirect(url);
+    if (!isAdmin && pathname.startsWith("/dashboard")) {
+      const onboarded = Boolean(sessionProfile?.onboarded);
+
+      if (onboarded && isOnboardingRoute) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/dashboard";
+        return NextResponse.redirect(url);
+      }
+
+      if (!onboarded && !isOnboardingRoute) {
+        const url = request.nextUrl.clone();
+        url.pathname = "/dashboard/onboarding";
+        return NextResponse.redirect(url);
+      }
     }
   }
 

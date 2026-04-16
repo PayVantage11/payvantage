@@ -35,6 +35,7 @@ export default function LoginPage(): ReactNode {
     }
 
     router.push("/dashboard");
+    router.refresh();
   }
 
   return (

@@ -1,3 +1,4 @@
+import { OnboardingGate } from "@/components/dashboard/onboarding-gate";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import {
   getSessionProfileForUser,
@@ -39,13 +40,16 @@ export default async function DashboardLayout({
     Boolean(merchantRow?.application_submitted_at) &&
     sessionProfile?.approved === false;
 
+  const needsOnboarding = !sessionProfile?.onboarded;
+
   return (
     <div className="flex min-h-screen">
       <Sidebar
         user={{ email: user.email ?? "", id: user.id }}
         onboarded={sessionProfile?.onboarded ?? false}
       />
-      <main className="flex-1 overflow-y-auto bg-background p-6 lg:p-8">
+      <main className="relative flex-1 overflow-y-auto bg-background p-6 lg:p-8">
+        <OnboardingGate needsOnboarding={needsOnboarding} />
         {showApplicationReview && (
           <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-foreground">
             <p className="font-medium">Application in review</p>

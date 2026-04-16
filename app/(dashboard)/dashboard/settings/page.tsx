@@ -40,6 +40,17 @@ export default function SettingsPage(): ReactNode {
   const [repLastName, setRepLastName] = useState("");
   const [repEmail, setRepEmail] = useState("");
   const [repPhone, setRepPhone] = useState("");
+  const [businessDescription, setBusinessDescription] = useState("");
+  const [expectedMonthlyVolume, setExpectedMonthlyVolume] = useState("");
+  const [coldWalletAddress, setColdWalletAddress] = useState("");
+  const [settlementNotes, setSettlementNotes] = useState("");
+  const [payramSuccessRedirectUrl, setPayramSuccessRedirectUrl] =
+    useState("");
+  const [payramCancelRedirectUrl, setPayramCancelRedirectUrl] =
+    useState("");
+  const [applicationSubmittedAt, setApplicationSubmittedAt] = useState<
+    string | null
+  >(null);
 
   const loadSettings = useCallback(async () => {
     const supabase = createClient();
@@ -54,7 +65,7 @@ export default function SettingsPage(): ReactNode {
       .from("merchant_settings")
       .select("*")
       .eq("merchant_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (settings) {
       setCompanyName(settings.company_name ?? "");
@@ -76,6 +87,15 @@ export default function SettingsPage(): ReactNode {
       setRepPhone(settings.representative_phone ?? "");
       setVerificationStatus(settings.verification_status ?? "pending");
       setVerificationNotes(settings.verification_notes ?? "");
+      setBusinessDescription(settings.business_description ?? "");
+      setExpectedMonthlyVolume(settings.expected_monthly_volume ?? "");
+      setColdWalletAddress(settings.cold_wallet_address ?? "");
+      setSettlementNotes(settings.settlement_notes ?? "");
+      setPayramSuccessRedirectUrl(
+        settings.payram_success_redirect_url ?? ""
+      );
+      setPayramCancelRedirectUrl(settings.payram_cancel_redirect_url ?? "");
+      setApplicationSubmittedAt(settings.application_submitted_at ?? null);
     }
 
     setLoading(false);
@@ -105,27 +125,40 @@ export default function SettingsPage(): ReactNode {
 
       const { error: settingsError } = await supabase
         .from("merchant_settings")
-        .upsert({
-          merchant_id: user.id,
-          company_name: companyName,
-          business_type: businessType,
-          legal_business_name: legalBusinessName || null,
-          business_registration_number: registrationNumber || null,
-          country: country || null,
-          business_address: businessAddress || null,
-          city: city || null,
-          state_province: stateProvince || null,
-          postal_code: postalCode || null,
-          representative_first_name: repFirstName || null,
-          representative_last_name: repLastName || null,
-          representative_email: repEmail || null,
-          representative_phone: repPhone || null,
-          website_url: websiteUrl || null,
-          webhook_url: webhookUrl || null,
-          wallet_address: walletAddress || null,
-          preferred_chain: preferredChain,
-          updated_at: new Date().toISOString(),
-        });
+        .upsert(
+          {
+            merchant_id: user.id,
+            company_name: companyName,
+            business_type: businessType,
+            business_description: businessDescription.trim() || null,
+            expected_monthly_volume: expectedMonthlyVolume || null,
+            legal_business_name: legalBusinessName || null,
+            business_registration_number: registrationNumber || null,
+            country: country || null,
+            business_address: businessAddress || null,
+            city: city || null,
+            state_province: stateProvince || null,
+            postal_code: postalCode || null,
+            representative_first_name: repFirstName || null,
+            representative_last_name: repLastName || null,
+            representative_email: repEmail || null,
+            representative_phone: repPhone || null,
+            website_url: websiteUrl || null,
+            webhook_url: webhookUrl || null,
+            wallet_address: walletAddress || null,
+            cold_wallet_address: coldWalletAddress.trim() || null,
+            settlement_notes: settlementNotes.trim() || null,
+            payram_success_redirect_url:
+              payramSuccessRedirectUrl.trim() || null,
+            payram_cancel_redirect_url:
+              payramCancelRedirectUrl.trim() || null,
+            preferred_chain: preferredChain,
+            payment_rail: "payram",
+            rail_config: {},
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "merchant_id" }
+        );
 
       if (settingsError) {
         setError(settingsError.message);
@@ -162,6 +195,18 @@ export default function SettingsPage(): ReactNode {
       </div>
 
       {/* Verification Status Banner */}
+      {applicationSubmittedAt ? (
+        <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-sm">
+          <p className="font-medium text-foreground">Application submitted</p>
+          <p className="mt-1 text-muted-foreground">
+            {new Date(applicationSubmittedAt).toLocaleString(undefined, {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}
+          </p>
+        </div>
+      ) : null}
+
       <div
         className={`flex items-center gap-3 rounded-xl border p-4 ${
           verificationStatus === "verified"
@@ -252,6 +297,67 @@ export default function SettingsPage(): ReactNode {
                 value={websiteUrl}
                 onChange={(e) => setWebsiteUrl(e.target.value)}
                 placeholder="https://yourstore.com"
+                className={inputClass}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Business description
+              </label>
+              <textarea
+                value={businessDescription}
+                onChange={(e) => setBusinessDescription(e.target.value)}
+                rows={3}
+                placeholder="What you sell and who your customers are"
+                className={`${inputClass} min-h-[88px] resize-y py-3`}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Expected monthly card volume
+              </label>
+              <input
+                type="text"
+                value={expectedMonthlyVolume}
+                onChange={(e) => setExpectedMonthlyVolume(e.target.value)}
+                placeholder="e.g. $10k – $50k / month"
+                className={inputClass}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Checkout redirects */}
+        <div className="rounded-xl border border-border bg-muted/30 p-6">
+          <h3 className="text-lg font-semibold text-foreground">
+            Checkout redirects
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Where shoppers return after paying or canceling (same values as
+            onboarding).
+          </p>
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Success URL
+              </label>
+              <input
+                type="url"
+                value={payramSuccessRedirectUrl}
+                onChange={(e) => setPayramSuccessRedirectUrl(e.target.value)}
+                placeholder="https://yoursite.com/thank-you"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Cancel URL
+              </label>
+              <input
+                type="url"
+                value={payramCancelRedirectUrl}
+                onChange={(e) => setPayramCancelRedirectUrl(e.target.value)}
+                placeholder="https://yoursite.com/cart"
                 className={inputClass}
               />
             </div>
@@ -431,6 +537,30 @@ export default function SettingsPage(): ReactNode {
                 onChange={(e) => setWalletAddress(e.target.value)}
                 placeholder="0x..."
                 className={`font-mono ${inputClass}`}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Cold wallet (treasury) address
+              </label>
+              <input
+                type="text"
+                value={coldWalletAddress}
+                onChange={(e) => setColdWalletAddress(e.target.value)}
+                placeholder="0x..."
+                className={`font-mono ${inputClass}`}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Settlement notes
+              </label>
+              <textarea
+                value={settlementNotes}
+                onChange={(e) => setSettlementNotes(e.target.value)}
+                rows={2}
+                placeholder="Optional notes for settlement / ops"
+                className={`${inputClass} min-h-[72px] resize-y py-3`}
               />
             </div>
           </div>
