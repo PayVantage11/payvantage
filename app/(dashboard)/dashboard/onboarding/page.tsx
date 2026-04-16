@@ -110,6 +110,15 @@ export default function OnboardingPage(): ReactNode {
         return;
       }
 
+      const { error: ensureError } = await supabase.rpc(
+        "ensure_merchant_profile"
+      );
+      if (ensureError) {
+        setError(ensureError.message);
+        setLoading(false);
+        return;
+      }
+
       const submittedAt = new Date().toISOString();
 
       const { error: settingsError } = await supabase
