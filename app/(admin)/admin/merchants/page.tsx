@@ -88,9 +88,19 @@ type Merchant = {
   approved: boolean;
   onboarded: boolean;
   created_at: string;
-  merchant_settings: MerchantSettings[] | null;
-  merchant_payram_credentials: PayramCredentialRow[] | null;
+  /** PostgREST may return one row as an object or as a single-element array. */
+  merchant_settings: MerchantSettings[] | MerchantSettings | null;
+  merchant_payram_credentials:
+    | PayramCredentialRow[]
+    | PayramCredentialRow
+    | null;
 };
+
+function firstRelationRow<T>(raw: T | T[] | null | undefined): T | null {
+  if (raw == null) return null;
+  if (Array.isArray(raw)) return raw[0] ?? null;
+  return raw;
+}
 
 const MERCHANT_SETTINGS_LIST_COLUMNS = `
            company_name, legal_business_name, business_registration_number, country,
@@ -199,7 +209,7 @@ export default function MerchantsPage(): ReactNode {
       return;
     }
     const m = merchants.find((row) => row.id === expanded);
-    const creds = m?.merchant_payram_credentials?.[0];
+    const creds = firstRelationRow(m?.merchant_payram_credentials);
     setPayramProjectId(creds?.payram_project_id ?? "");
     setPayramProjectName(creds?.payram_project_name ?? "");
     setPayramApiKey("");
@@ -244,8 +254,7 @@ export default function MerchantsPage(): ReactNode {
   }, [expanded]);
 
   function getSettingsFromMerchant(m: Merchant | undefined): MerchantSettings | null {
-    if (!m?.merchant_settings?.[0]) return null;
-    return m.merchant_settings[0];
+    return firstRelationRow(m?.merchant_settings);
   }
 
   async function handleSavePayramCredentials(merchantId: string) {
@@ -715,7 +724,7 @@ export default function MerchantsPage(): ReactNode {
                             value={payramApiKey}
                             onChange={(e) => setPayramApiKey(e.target.value)}
                             placeholder={
-                              m.merchant_payram_credentials?.[0]
+                              firstRelationRow(m.merchant_payram_credentials)
                                 ? "Paste new key to rotate"
                                 : "Paste project API key"
                             }

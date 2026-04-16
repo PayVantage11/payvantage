@@ -358,8 +358,10 @@ create index if not exists idx_merchant_settings_merchant_id on public.merchant_
 -- ADMIN SEED
 -- ============================================================================
 -- After creating your admin account via the normal signup flow, run this
--- replacing 'your-admin@email.com' with your actual email:
+-- replacing the email with your actual address (case-insensitive match):
 --
 --   UPDATE public.profiles
 --   SET role = 'admin', approved = true, onboarded = true
---   WHERE email = 'your-admin@email.com';
+--   WHERE lower(trim(email)) = lower(trim('your-admin@email.com'));
+--
+-- See also: supabase/patches/promote-admin-by-email.sql
