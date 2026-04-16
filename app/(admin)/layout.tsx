@@ -3,6 +3,8 @@ import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: Readonly<{
@@ -24,7 +26,9 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  if (profile?.role !== "admin") {
+  const isAdmin =
+    (profile?.role ?? "").trim().toLowerCase() === "admin";
+  if (!isAdmin) {
     redirect("/dashboard");
   }
 

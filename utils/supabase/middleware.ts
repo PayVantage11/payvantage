@@ -55,7 +55,25 @@ export async function updateSession(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    if (profile && !profile.onboarded && profile.role !== "admin" && pathname.startsWith("/dashboard")) {
+    const roleNorm = (profile?.role ?? "").trim().toLowerCase();
+    const isAdmin = roleNorm === "admin";
+
+    if (
+      isAdmin &&
+      pathname.startsWith("/dashboard") &&
+      !pathname.startsWith("/admin")
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin";
+      return NextResponse.redirect(url);
+    }
+
+    if (
+      profile &&
+      !profile.onboarded &&
+      !isAdmin &&
+      pathname.startsWith("/dashboard")
+    ) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard/onboarding";
       return NextResponse.redirect(url);
