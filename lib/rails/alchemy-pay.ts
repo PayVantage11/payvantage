@@ -3,7 +3,11 @@ import type {
   CreatePaymentParams,
   CreatePaymentResult,
 } from "./types";
-import { generateAlchemyPaySign } from "./alchemy-pay-sign";
+import {
+  buildAlchemyPayQueryPath,
+  canonicalJsonBodyString,
+  generateAlchemyPaySign,
+} from "./alchemy-pay-sign";
 
 function getAlchemyPayConfig() {
   const appId = process.env["ALCHEMY_PAY_APP_ID"];
@@ -30,8 +34,8 @@ async function getAccessToken(customerEmail: string): Promise<string> {
   const { appId, appSecret, baseUrl } = getAlchemyPayConfig();
   const timestamp = String(Date.now());
   const path = "/open/api/v4/merchant/getToken";
-  const body = JSON.stringify({ email: customerEmail });
-  const sign = generateAlchemyPaySign(timestamp, "POST", path, body, appSecret);
+  const bodyString = canonicalJsonBodyString({ email: customerEmail });
+  const sign = generateAlchemyPaySign(timestamp, "POST", path, bodyString, appSecret);
 
   const response = await fetch(`${baseUrl}${path}`, {
     method: "POST",
@@ -41,7 +45,7 @@ async function getAccessToken(customerEmail: string): Promise<string> {
       timestamp,
       sign,
     },
-    body,
+    body: bodyString,
   });
 
   if (!response.ok) {
@@ -126,21 +130,24 @@ export const alchemyPayProvider: RailProvider = {
     const path = "/open/api/v4/merchant/trade/create";
     const network = mapChainToNetwork(params.chain);
 
-    const orderBody = {
+    const orderBody: Record<string, unknown> = {
       side: "BUY",
       cryptoCurrency: "USDT",
       address: params.walletAddress,
       network,
       fiatCurrency: params.currency.toUpperCase(),
-      amount: params.amount,
+      amount: String(params.amount),
       merchantOrderNo: params.orderId,
       depositType: 2,
       payWayCode: "10001",
-      redirectUrl: params.returnUrl ?? "",
       callbackUrl: params.callbackUrl,
     };
+    const trimmedReturn = params.returnUrl?.trim();
+    if (trimmedReturn) {
+      orderBody.redirectUrl = trimmedReturn;
+    }
 
-    const bodyString = JSON.stringify(orderBody);
+    const bodyString = canonicalJsonBodyString(orderBody);
     const sign = generateAlchemyPaySign(
       timestamp,
       "POST",
@@ -186,7 +193,10 @@ export const alchemyPayProvider: RailProvider = {
   async getPaymentStatus(providerOrderId: string): Promise<string> {
     const { appId, appSecret, baseUrl } = getAlchemyPayConfig();
     const timestamp = String(Date.now());
-    const path = `/open/api/v4/merchant/query/trade?orderNo=${providerOrderId}&side=BUY`;
+    const path = buildAlchemyPayQueryPath("/open/api/v4/merchant/query/trade", {
+      orderNo: providerOrderId,
+      side: "BUY",
+    });
     const sign = generateAlchemyPaySign(timestamp, "GET", path, "", appSecret);
 
     const response = await fetch(`${baseUrl}${path}`, {

@@ -9,13 +9,19 @@ const supabaseServiceKey =
   process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"]!;
 const webhookSecret = process.env["INQUD_WEBHOOK_SECRET"] ?? "";
 
-function verifySignature(payload: string, signature: string): boolean {
+/**
+ * Inqud sends HMAC-SHA1(rawBody, secret) as lowercase hex in X-Payload-Digest.
+ * https://docs.inqud.com/developer/web-hooks/web-hook-verification.md
+ */
+function verifyInqudPayloadDigest(payload: string, digestHeader: string): boolean {
   if (!webhookSecret) return true;
-  const expected = createHmac("sha256", webhookSecret)
-    .update(payload)
+  const expected = createHmac("sha1", webhookSecret)
+    .update(payload, "utf8")
     .digest("hex");
+  const received = digestHeader.trim().toLowerCase();
+  if (received.length !== expected.length) return false;
   try {
-    return timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+    return timingSafeEqual(Buffer.from(expected, "utf8"), Buffer.from(received, "utf8"));
   } catch {
     return false;
   }
@@ -25,10 +31,13 @@ export async function POST(request: Request) {
   try {
     const rawBody = await request.text();
 
-    const signature = request.headers.get("x-webhook-signature") ?? "";
-    if (webhookSecret && !verifySignature(rawBody, signature)) {
+    const digest =
+      request.headers.get("x-payload-digest") ??
+      request.headers.get("X-Payload-Digest") ??
+      "";
+    if (webhookSecret && !verifyInqudPayloadDigest(rawBody, digest)) {
       return NextResponse.json(
-        { error: "Invalid webhook signature" },
+        { error: "Invalid webhook digest" },
         { status: 401 }
       );
     }
