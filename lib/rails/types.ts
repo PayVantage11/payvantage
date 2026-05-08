@@ -1,4 +1,4 @@
-export type RailName = "payram" | "inqud" | "alchemypay";
+export type RailName = "payram" | "inqud" | "alchemypay" | "nexapay";
 
 export interface CreatePaymentParams {
   amount: number;

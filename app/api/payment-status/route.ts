@@ -4,9 +4,7 @@ import { getPayramClientForMerchant } from "@/lib/payram";
 import { getRailProvider, isValidRail, type RailName } from "@/lib/rails";
 
 const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"]!;
-const supabaseServiceKey =
-  process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
-  process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"]!;
+const supabaseServiceKey = process.env["SUPABASE_SECERT_KEY"]?.trim() || "";
 
 export async function GET(request: NextRequest) {
   try {
@@ -101,9 +99,7 @@ export async function GET(request: NextRequest) {
               : undefined;
           const provider = getRailProvider(
             rail as RailName,
-            rail === "payram" && payramClient
-              ? { payramClient }
-              : undefined
+            rail === "payram" && payramClient ? { payramClient } : undefined
           );
           if (provider.getPaymentStatus) {
             const newStatus = await provider.getPaymentStatus(providerId);
@@ -128,6 +124,8 @@ export async function GET(request: NextRequest) {
       transaction_id: transaction.id,
       reference_id:
         transaction.provider_order_id ?? transaction.payram_reference_id,
+      provider_payment_id: transaction.provider_payment_id,
+      provider_txid: transaction.provider_txid,
       rail: transaction.payment_rail ?? "payram",
       amount: transaction.amount,
       currency: transaction.currency,

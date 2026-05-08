@@ -3,6 +3,7 @@ import type { RailName, RailProvider } from "./types";
 import { createPayramProvider } from "./payram";
 import { inqudProvider } from "./inqud";
 import { alchemyPayProvider } from "./alchemy-pay";
+import { nexapayProvider } from "./nexapay";
 import { getPayramClient } from "@/lib/payram";
 
 export type { RailName, RailProvider, CreatePaymentParams, CreatePaymentResult } from "./types";
@@ -10,6 +11,7 @@ export type { RailName, RailProvider, CreatePaymentParams, CreatePaymentResult }
 const otherProviders: Record<Exclude<RailName, "payram">, RailProvider> = {
   inqud: inqudProvider,
   alchemypay: alchemyPayProvider,
+  nexapay: nexapayProvider,
 };
 
 export type RailProviderOptions = {
@@ -33,7 +35,12 @@ export function getRailProvider(
 }
 
 export function isValidRail(rail: string): rail is RailName {
-  return rail === "payram" || rail === "inqud" || rail === "alchemypay";
+  return (
+    rail === "payram" ||
+    rail === "inqud" ||
+    rail === "alchemypay" ||
+    rail === "nexapay"
+  );
 }
 
 /**
