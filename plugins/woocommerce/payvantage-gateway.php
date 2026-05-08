@@ -103,10 +103,22 @@ function payvantage_gateway_init() {
         public function process_payment( $order_id ) {
             $order = wc_get_order( $order_id );
 
+            if ( ! $order ) {
+                wc_add_notice( __( 'Payment error: Could not find WooCommerce order.', 'payvantage-gateway' ), 'error' );
+                return;
+            }
+
+            $customer_id = $order->get_customer_id()
+                ? (string) $order->get_customer_id()
+                : 'wc_guest_' . $order->get_id();
+
             $payload = array(
                 'amount'           => (float) $order->get_total(),
                 'currency'         => $order->get_currency(),
                 'merchant_api_key' => $this->publishable_key,
+                'customer_email'   => $order->get_billing_email(),
+                'customer_id'      => $customer_id,
+                'return_url'       => $this->get_return_url( $order ),
             );
 
             $response = wp_remote_post(
@@ -128,14 +140,22 @@ function payvantage_gateway_init() {
             }
 
             $body = json_decode( wp_remote_retrieve_body( $response ), true );
+            $status_code = wp_remote_retrieve_response_code( $response );
 
-            if ( empty( $body['payment_url'] ) ) {
-                $error_msg = isset( $body['error'] ) ? $body['error'] : 'Unknown error';
+            if ( $status_code < 200 || $status_code >= 300 || empty( $body['payment_url'] ) ) {
+                $error_msg = isset( $body['error'] ) ? $body['error'] : __( 'Unknown error', 'payvantage-gateway' );
                 wc_add_notice( __( 'Payment error: ', 'payvantage-gateway' ) . $error_msg, 'error' );
                 return;
             }
 
-            $order->update_meta_data( '_payvantage_checkout_id', $body['reference_id'] );
+            if ( ! empty( $body['reference_id'] ) ) {
+                $order->update_meta_data( '_payvantage_checkout_id', sanitize_text_field( $body['reference_id'] ) );
+            }
+
+            if ( ! empty( $body['transaction_id'] ) ) {
+                $order->update_meta_data( '_payvantage_transaction_id', sanitize_text_field( $body['transaction_id'] ) );
+            }
+
             $order->update_status( 'pending', __( 'Awaiting PayVantage payment.', 'payvantage-gateway' ) );
             $order->save();
 

@@ -3,8 +3,7 @@ import { NextResponse } from "next/server";
 
 const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"]!;
 const supabaseServiceKey =
-  process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
-  process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"]!;
+  process.env["SUPABASE_SECERT_KEY"]?.trim() ||  "";
 const adminSetupToken = process.env["ADMIN_SETUP_TOKEN"];
 
 export async function POST(request: Request) {

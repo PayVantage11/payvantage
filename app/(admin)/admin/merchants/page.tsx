@@ -19,12 +19,14 @@ const RAIL_OPTIONS = [
   { value: "payram", label: "Primary card rail" },
   { value: "inqud", label: "Inqud" },
   { value: "alchemypay", label: "Alchemy Pay" },
+  { value: "nexapay", label: "NexaPay One" },
 ] as const;
 
 const RAIL_COLORS: Record<string, string> = {
   payram: "bg-violet-500/10 text-violet-600 dark:text-violet-400",
   inqud: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
   alchemypay: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+  nexapay: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
 };
 
 function railLabel(value: string): string {
