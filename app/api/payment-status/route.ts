@@ -4,7 +4,7 @@ import { getPayramClientForMerchant } from "@/lib/payram";
 import { getRailProvider, isValidRail, type RailName } from "@/lib/rails";
 
 const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"]!;
-const supabaseServiceKey = process.env["SUPABASE_SECERT_KEY"]?.trim() || "";
+const supabaseServiceKey = process.env["SUPABASE_SECRET_KEY"]?.trim() || "";
 
 export async function GET(request: NextRequest) {
   try {

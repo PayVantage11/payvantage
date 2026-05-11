@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+
 // import { getPayramClientForMerchant } from "@/lib/payram";
 import {
   getRailProvider,
@@ -9,7 +10,7 @@ import {
 } from "@/lib/rails";
 
 const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"]!;
-const supabaseServiceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"]?.trim() || "";
+const supabaseServiceKey = process.env["SUPABASE_SECRET_KEY"]?.trim() || "";
 
 export async function POST(request: Request) {
   try {

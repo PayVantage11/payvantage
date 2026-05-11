@@ -5,7 +5,7 @@ import { mapInqudStatusToInternal } from "@/lib/rails/inqud";
 
 const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"]!;
 const supabaseServiceKey =
-  process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
+  process.env["SUPABASE_SECRET_KEY"] ??
   process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"]!;
 const webhookSecret = process.env["INQUD_WEBHOOK_SECRET"] ?? "";
 
