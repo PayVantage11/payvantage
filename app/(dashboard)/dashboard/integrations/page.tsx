@@ -13,7 +13,7 @@ const integrations = [
       "Enable PayVantage and enter your Publishable and Secret API keys",
       "Save and test with a small payment",
     ],
-    downloadHref: "#",
+    downloadHref: "/api/plugins?file=Payvantage-woocomerce.zip",
     docsHref: "#",
   },
   {
@@ -27,7 +27,7 @@ const integrations = [
       "Deploy to your preferred hosting (Vercel, Railway, etc.)",
       "Install the app in your Shopify store",
     ],
-    downloadHref: "#",
+    downloadHref: "/api/plugins?file=shopify.zip",
     docsHref: "#",
   },
 ];
@@ -85,6 +85,7 @@ export default function IntegrationsPage(): ReactNode {
             <div className="flex items-center gap-3">
               <a
                 href={integration.downloadHref}
+                download={true}
                 className="flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
               >
                 <Download className="h-4 w-4" />
