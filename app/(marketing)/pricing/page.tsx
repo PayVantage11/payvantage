@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 export const metadata: Metadata = createMetadata({
   title: "Pricing",
   description:
-    "PayVantage pricing: 6% flat for the USDC settlement rail, and custom rates for traditional high-risk card processing. No monthly fees or setup costs.",
+    "PayVantage pricing: 7% flat for the USDC settlement rail, and custom rates for traditional high-risk card processing. No monthly fees or setup costs.",
   path: "/pricing",
 });
 

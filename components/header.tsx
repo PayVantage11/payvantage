@@ -336,10 +336,18 @@ export function Header(): ReactNode {
               className="flex items-center gap-2"
               aria-label="Home"
             >
-              <div
-                className="h-6 w-6 rounded-full bg-white"
-                aria-hidden="true"
-              />
+              <svg
+                viewBox="0 0 28 22"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="PayVantage"
+                role="img"
+                className="h-6 w-auto text-white"
+              >
+                <path
+                  d="M0 22L14 0L28 22L22 22L14 8L6 22Z"
+                  fill="currentColor"
+                />
+              </svg>
               <span className="text-lg font-semibold text-white">
                 PayVantage
               </span>
@@ -410,10 +418,18 @@ export function Header(): ReactNode {
               className="flex items-center gap-2"
               aria-label="Home"
             >
-              <div
-                className="h-6 w-6 rounded-full bg-white"
-                aria-hidden="true"
-              />
+              <svg
+                viewBox="0 0 28 22"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="PayVantage"
+                role="img"
+                className="h-6 w-auto text-white"
+              >
+                <path
+                  d="M0 22L14 0L28 22L22 22L14 8L6 22Z"
+                  fill="currentColor"
+                />
+              </svg>
               <span className="text-lg font-semibold text-white">
                 PayVantage
               </span>
@@ -449,10 +465,18 @@ export function Header(): ReactNode {
                 aria-label="Home"
                 onClick={closeMobileMenu}
               >
-                <div
-                  className="h-6 w-6 rounded-full bg-foreground"
-                  aria-hidden="true"
-                />
+                <svg
+                  viewBox="0 0 28 22"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-label="PayVantage"
+                  role="img"
+                  className="h-6 w-auto text-foreground"
+                >
+                  <path
+                    d="M0 22L14 0L28 22L22 22L14 8L6 22Z"
+                    fill="currentColor"
+                  />
+                </svg>
                 <span className="text-lg font-semibold text-foreground">
                   PayVantage
                 </span>

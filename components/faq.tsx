@@ -25,7 +25,7 @@ const faqs: FAQItem[] = [
   {
     question: "What are the fees?",
     answer:
-      "Our USDC settlement rail is 6% per transaction — flat, no monthly fees, no setup costs. For traditional card processing, rates are custom based on your industry and volume. No monthly minimums or equipment fees on either option. Book a call and we'll walk you through which option fits your business.",
+      "Our USDC settlement rail is 7% per transaction — flat, no monthly fees, no setup costs. For traditional card processing, rates are custom based on your industry and volume. No monthly minimums or equipment fees on either option. Book a call and we'll walk you through which option fits your business.",
   },
   {
     question: "How fast is settlement?",
