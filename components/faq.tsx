@@ -157,7 +157,7 @@ export function FAQ(): ReactNode {
           >
             <p className="text-foreground/60">Still have questions?</p>
             <a
-              href="mailto:support@payvantage.io"
+              href="mailto:support@pay-vantage.com"
               className="group inline-flex items-center gap-2 font-medium text-foreground transition-opacity hover:opacity-70"
             >
               Get in touch

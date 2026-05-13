@@ -9,7 +9,7 @@ export const siteConfig = {
   tagline: "High-risk payments — two rails, one platform",
   description:
     "Traditional card processing through our banking network, plus instant USDC settlement for merchants who need liquidity without chargebacks. Built for categories mainstream processors avoid.",
-  url: "https://payvantage.io",
+  url: "https://pay-vantage.com",
   twitter: "@payvantage",
 
   nav: {
@@ -80,7 +80,7 @@ export const faqConfig = {
     text: "Still have questions?",
     cta: {
       text: "Contact Support",
-      href: "mailto:support@payvantage.io",
+      href: "mailto:support@pay-vantage.com",
     },
   },
 } as const;
@@ -127,22 +127,22 @@ export const footerConfig = {
       { label: "Log in", href: "/login" },
     ],
     support: [
-      { label: "Contact", href: "mailto:hello@payvantage.io" },
-      { label: "Security", href: "mailto:hello@payvantage.io?subject=Security" },
+      { label: "Contact", href: "/contact" },
+      { label: "Security", href: "mailto:security@pay-vantage.com?subject=Security" },
     ],
     legal: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
-      { label: "Security", href: "#" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Terms", href: "/terms" },
+      { label: "About", href: "/about" },
     ],
   },
   contact: {
-    location: "Miami",
-    address: "1395 Brickell Ave, Suite 800\nMiami, FL 33131",
+    location: "Atlanta",
+    address: "Vantage Capital Insights LLC\nAtlanta, GA",
     hours: "Mon-Fri 9:00 am - 6:00 pm (EST)",
-    email: "hello@payvantage.io",
+    email: "hwayner@vantagecapitalinsights.com",
   },
-  copyright: `© ${new Date().getFullYear()} PayVantage Inc. All rights reserved.`,
+  copyright: `© ${new Date().getFullYear()} Vantage Capital Insights LLC. All rights reserved.`,
 } as const;
 
 /**

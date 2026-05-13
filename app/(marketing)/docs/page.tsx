@@ -107,10 +107,10 @@ export default function DocsPage(): ReactNode {
               </Link>{" "}
               or email{" "}
               <a
-                href="mailto:hello@payvantage.io"
+                href="mailto:hwayner@vantagecapitalinsights.com"
                 className="font-medium text-foreground underline-offset-4 hover:underline"
               >
-                hello@payvantage.io
+                hwayner@vantagecapitalinsights.com
               </a>
               .
             </p>

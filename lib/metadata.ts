@@ -4,13 +4,13 @@ export const siteConfig = {
   name: "PayVantage",
   description:
     "High-risk payment processing with two rails: traditional card acquiring and instant USDC settlement. Built for merchants mainstream processors won't serve.",
-  url: "https://payvantage.io",
+  url: "https://pay-vantage.com",
   ogImage: "/og-image.png",
   creator: "@payvantage",
   authors: [
     {
       name: "PayVantage",
-      url: "https://payvantage.io",
+      url: "https://pay-vantage.com",
     },
   ],
   keywords: [

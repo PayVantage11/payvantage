@@ -150,7 +150,7 @@ export async function POST(request: Request) {
     const walletAddress = merchantSettings?.wallet_address ?? "";
     const chain = merchantSettings?.preferred_chain ?? "BASE";
 
-    const email = customer_email ?? "customer@payvantage.io";
+    const email = customer_email ?? "customer@pay-vantage.com";
     const custId = customer_id ?? keyRecord.merchant_id;
 
     // Pre-create the transaction to get an ID for the order reference

@@ -110,5 +110,5 @@ Deploy to Vercel, Railway, or any Node.js hosting platform. Update your Shopify 
 
 ## Support
 
-- **API Docs**: https://payvantage.io/docs
-- **Email**: support@payvantage.io
+- **API Docs**: https://pay-vantage.com/docs
+- **Email**: support@pay-vantage.com

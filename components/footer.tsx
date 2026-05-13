@@ -24,19 +24,22 @@ const footerLinks = {
       { label: "Log in", href: "/login" },
     ],
   },
-  support: {
-    title: "Support",
+  company: {
+    title: "Company",
     links: [
-      { label: "Contact", href: "mailto:hello@payvantage.io" },
-      { label: "Security", href: "mailto:hello@payvantage.io?subject=Security" },
+      { label: "About", href: "/about" },
+      { label: "Contact", href: "/contact" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
     ],
   },
 };
 
 const legalLinks = [
-  { label: "Privacy Policy", href: "#" },
-  { label: "Terms of Service", href: "#" },
-  { label: "Cookie Policy", href: "#" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Contact", href: "/contact" },
+  { label: "About", href: "/about" },
 ];
 
 export function Footer(): ReactNode {
@@ -68,9 +71,9 @@ export function Footer(): ReactNode {
                   </span>
                 </Link>
                 <p className="mt-4 max-w-xs text-sm text-foreground/50">
-                  &copy; {new Date().getFullYear()} PayVantage Inc. High-risk
-                  processing: traditional acquiring and USDC settlement in one
-                  platform.
+                  &copy; {new Date().getFullYear()} Vantage Capital Insights
+                  LLC. High-risk processing: traditional acquiring and USDC
+                  settlement in one platform.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:gap-12">
@@ -82,12 +85,21 @@ export function Footer(): ReactNode {
                     <ul className="space-y-3">
                       {section.links.map((link) => (
                         <li key={link.label}>
-                          <a
-                            href={link.href}
-                            className="text-sm text-foreground/70 transition-colors hover:text-foreground"
-                          >
-                            {link.label}
-                          </a>
+                          {link.href.startsWith("/") ? (
+                            <Link
+                              href={link.href}
+                              className="text-sm text-foreground/70 transition-colors hover:text-foreground"
+                            >
+                              {link.label}
+                            </Link>
+                          ) : (
+                            <a
+                              href={link.href}
+                              className="text-sm text-foreground/70 transition-colors hover:text-foreground"
+                            >
+                              {link.label}
+                            </a>
+                          )}
                         </li>
                       ))}
                     </ul>
@@ -103,21 +115,21 @@ export function Footer(): ReactNode {
         <div className="relative w-full max-w-270">
           <div className="px-8 pt-8 sm:px-12">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-              <a
-                href="mailto:support@payvantage.io"
+              <Link
+                href="/contact"
                 className="text-sm text-foreground/70 transition-colors hover:text-foreground"
               >
                 Contact us
-              </a>
+              </Link>
               <div className="flex flex-wrap gap-6">
                 {legalLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.label}
                     href={link.href}
                     className="text-sm text-foreground/50 transition-colors hover:text-foreground"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
