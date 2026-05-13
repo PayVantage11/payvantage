@@ -24,7 +24,7 @@ const plans: PricingPlan[] = [
   {
     name: "High-risk merchants",
     tagline: "Peptides, supplements, nutraceuticals",
-    price: "6%",
+    price: "7%",
     priceDetail: "per transaction — flat percentage only",
     priceSubline: "Instant USDC settlement",
     description:
