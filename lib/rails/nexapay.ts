@@ -32,6 +32,7 @@ function normalizeNexaPayStatus(
     case "SUCCESS":
     case "SETTLED":
     case "PAID":
+    case "FINISHED":
       return "completed";
     case "FAILED":
     case "DECLINED":
