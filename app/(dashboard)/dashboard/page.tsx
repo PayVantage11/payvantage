@@ -10,6 +10,13 @@ export default async function DashboardOverview(): Promise<ReactNode> {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("approved")
+    .eq("id", user!.id)
+    .maybeSingle();
+  const pendingApproval = profile?.approved !== true;
+
   const { data: transactions } = await supabase
     .from("transactions")
     .select("*")
@@ -85,6 +92,17 @@ export default async function DashboardOverview(): Promise<ReactNode> {
 
   return (
     <div className="space-y-8">
+      {pendingApproval && (
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+          <p className="text-sm font-medium text-foreground">
+            Account in underwriting
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Payment links will activate once approved.
+          </p>
+        </div>
+      )}
+
       <div>
         <h1 className="text-2xl font-semibold text-foreground">Overview</h1>
         <p className="mt-1 text-sm text-muted-foreground">

@@ -89,30 +89,36 @@ export async function POST(request: Request) {
       .select("approved")
       .eq("id", keyRecord.merchant_id)
       .limit(1)
-      .single();
-
-    if (!profile?.approved) {
-      return NextResponse.json(
-        { error: "Merchant account is not approved" },
-        { status: 403 }
-      );
-    }
+      .maybeSingle();
 
     const { data: merchantSettings } = await supabase
       .from("merchant_settings")
       .select("payment_rail, fallback_rail, wallet_address, preferred_chain")
       .eq("merchant_id", keyRecord.merchant_id)
       .limit(1)
-      .single();
+      .maybeSingle();
 
-    const primaryRail: RailName =
-      merchantSettings?.payment_rail &&
-      isValidRail(merchantSettings.payment_rail)
-        ? (merchantSettings.payment_rail as RailName)
-        : "alchemypay";
+    const pendingApproval =
+      !profile?.approved ||
+      !merchantSettings ||
+      !merchantSettings.payment_rail ||
+      !isValidRail(merchantSettings.payment_rail);
+
+    if (pendingApproval) {
+      return NextResponse.json(
+        {
+          error: "account_pending_approval",
+          message:
+            "Your account is pending underwriting approval. Payment links will work once approval is complete. We will notify you as soon as you are live.",
+        },
+        { status: 403 }
+      );
+    }
+
+    const primaryRail = merchantSettings.payment_rail as RailName;
 
     const fallbackRail: RailName | null =
-      merchantSettings?.fallback_rail &&
+      merchantSettings.fallback_rail &&
       isValidRail(merchantSettings.fallback_rail)
         ? (merchantSettings.fallback_rail as RailName)
         : null;
