@@ -28,6 +28,7 @@ export default function PaymentsPage(): ReactNode {
   const [showCreate, setShowCreate] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pendingNotice, setPendingNotice] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   const [amount, setAmount] = useState("");
@@ -96,6 +97,7 @@ export default function PaymentsPage(): ReactNode {
     if (!amount || !apiKey) return;
     setCreating(true);
     setError(null);
+    setPendingNotice(null);
     setSuccess(null);
 
     try {
@@ -113,7 +115,14 @@ export default function PaymentsPage(): ReactNode {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error ?? "Failed to create payment link");
+        if (data.error === "account_pending_approval") {
+          setPendingNotice(
+            data.message ??
+              "Your account is pending underwriting approval. Payment links will work once approval is complete."
+          );
+        } else {
+          setError(data.error ?? "Failed to create payment link");
+        }
         setCreating(false);
         return;
       }
@@ -197,6 +206,15 @@ export default function PaymentsPage(): ReactNode {
             </a>{" "}
             to create one.
           </p>
+        </div>
+      )}
+
+      {pendingNotice && (
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+          <p className="text-sm font-medium text-foreground">
+            Account in underwriting
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{pendingNotice}</p>
         </div>
       )}
 
