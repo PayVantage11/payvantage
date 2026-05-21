@@ -20,10 +20,28 @@ function normalize(status: string | undefined): string {
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token");
   const orderId = request.nextUrl.searchParams.get("order_id");
+  const list = request.nextUrl.searchParams.get("list");
 
   if (!adminSetupToken || token !== adminSetupToken) {
     return NextResponse.json({ error: "Invalid token" }, { status: 403 });
   }
+
+  if (list === "pending") {
+    if (!supabaseUrl || !supabaseSecretKey) {
+      return NextResponse.json({ error: "supabase env missing" }, { status: 500 });
+    }
+    const supabase = createClient(supabaseUrl, supabaseSecretKey);
+    const { data, error } = await supabase
+      .from("transactions")
+      .select(
+        "id, status, payment_rail, provider_order_id, amount, currency, created_at, updated_at"
+      )
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    return NextResponse.json({ error: error?.message ?? null, rows: data });
+  }
+
   if (!orderId) {
     return NextResponse.json(
       { error: "order_id query param required" },
