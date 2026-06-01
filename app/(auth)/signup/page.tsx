@@ -45,6 +45,13 @@ export default function SignupPage(): ReactNode {
       return;
     }
 
+    // Signup succeeded (no auth error) — fire the Meta Pixel Lead event so ad
+    // campaigns can optimize for completed signups. Guarded so it never throws
+    // if the pixel is blocked or has not loaded yet.
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "Lead");
+    }
+
     if (data.session) {
       router.push("/dashboard/onboarding");
       router.refresh();
