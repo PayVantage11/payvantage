@@ -9,6 +9,28 @@ import { useState, type FormEvent, type ReactNode } from "react";
 const inputClass =
   "h-12 w-full rounded-xl border border-border bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent";
 
+// Read ad attribution (?src + UTM params) from the current URL so it can be
+// stored with the signup as Supabase user_metadata. Pure client-side read —
+// keeps this page statically rendered and never touches rail/API/webhook code.
+function readAttribution(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const params = new URLSearchParams(window.location.search);
+  const keys = [
+    "src",
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_content",
+    "utm_term",
+  ];
+  const attribution: Record<string, string> = {};
+  for (const key of keys) {
+    const value = params.get(key);
+    if (value) attribution[key] = value;
+  }
+  return attribution;
+}
+
 export default function SignupPage(): ReactNode {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,6 +56,7 @@ export default function SignupPage(): ReactNode {
       options: {
         data: {
           company_name: companyName,
+          ...readAttribution(),
         },
         emailRedirectTo: `${origin}/auth/callback?next=/dashboard/onboarding`,
       },
