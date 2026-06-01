@@ -1,3 +1,4 @@
+import { MetaPixel } from "@/components/meta-pixel";
 import { Providers } from "@/components/providers";
 import { SkipToContent } from "@/components/skip-to-content";
 import { baseMetadata } from "@/lib/metadata";
@@ -38,6 +39,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
+        <MetaPixel />
         <Providers>
           <SkipToContent />
           {children}
