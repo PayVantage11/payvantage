@@ -12,14 +12,14 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  EDIT ME — placeholder trust numbers. Replace with real, defensible figures
-//  before running ads. Do not publish claims you can't back up.
+//  Real, defensible trust numbers. Update as the business grows — keep them
+//  honest; do not publish claims you can't back up.
 // ─────────────────────────────────────────────────────────────────────────────
 const STATS: { value: string; label: string }[] = [
-  { value: "$100M+", label: "Processed for high-risk merchants" }, // EDIT
-  { value: "500+", label: "Merchants live on our rails" }, // EDIT
-  { value: "48 hrs", label: "Typical time to approval" }, // EDIT
-  { value: "12+", label: "Acquiring rails in the network" }, // EDIT
+  { value: "$130K+", label: "Processed for high-risk merchants" },
+  { value: "40+", label: "Merchants live on our rails" },
+  { value: "Days", label: "Typical time to approval" },
+  { value: "7", label: "Rails in the network" },
 ];
 
 const VERTICALS = "peptides, supplements, nutraceuticals & high-risk e-commerce";
@@ -169,12 +169,11 @@ export default function ProcessingLandingPage(): ReactNode {
             Works with the store you already have
           </h2>
           <p className="max-w-xl text-muted-foreground">
-            WooCommerce, Shopify, or a custom checkout — keep your storefront and
-            keep selling. No rebuild, no migration headache. You bring the store;
-            we bring the rails.
+            Install our WooCommerce plugin and keep selling — no rebuild, no
+            migration headache. You bring the store; we bring the rails.
           </p>
           <ul className="mt-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
-            {["WooCommerce", "Shopify", "Custom checkout"].map((x) => (
+            {["WooCommerce plugin", "Custom checkout"].map((x) => (
               <li key={x} className="inline-flex items-center gap-2">
                 <Check className="h-4 w-4 text-accent" aria-hidden />
                 {x}
