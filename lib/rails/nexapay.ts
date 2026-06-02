@@ -15,6 +15,36 @@ export type InternalTxStatus =
   | "expired"
   | "partially_paid";
 
+/**
+ * Error thrown when NexaPay returns a non-OK HTTP response (or an explicit
+ * success:false body). Carries the status + body so callers can distinguish a
+ * definitive "no such payment" from a transient network/server error.
+ */
+export class NexaPayApiError extends Error {
+  readonly status: number;
+  readonly body: string;
+  constructor(status: number, body: string) {
+    super(`NexaPay request failed ${status}: ${body}`);
+    this.name = "NexaPayApiError";
+    this.status = status;
+    this.body = body;
+  }
+}
+
+/**
+ * True when an error means NexaPay definitively has no usable record for the
+ * order (404 / client error / "not found" body) — i.e. safe to count toward
+ * expiry. Network errors, auth/rate-limit (401/403/429), and 5xx are transient
+ * and must NOT push a row toward expiry.
+ */
+export function isNexaPayNotFoundError(err: unknown): boolean {
+  if (!(err instanceof NexaPayApiError)) return false;
+  if ([400, 404, 409, 410, 422].includes(err.status)) return true;
+  return /not[\s_-]?found|no such|does not exist|no record|unknown (payment|order)|invalid (payment|order)/i.test(
+    err.body
+  );
+}
+
 function getNexaPayConfig() {
   const appId = process.env["NEXAPAY_APP_ID"];
   const baseUrl =
@@ -90,7 +120,7 @@ async function nexapayFetch<T>(
 
   const text = await response.text();
   if (!response.ok) {
-    throw new Error(`NexaPay request failed ${response.status}: ${text}`);
+    throw new NexaPayApiError(response.status, text);
   }
 
   try {
@@ -185,6 +215,10 @@ export async function getNexaPayPaymentDetails(
     `/payments/${encodeURIComponent(providerOrderId)}`,
     { method: "GET" }
   );
+  // An explicit success:false means NexaPay has no usable record for this order.
+  if (!result.success) {
+    throw new NexaPayApiError(422, JSON.stringify(result));
+  }
   const top = result as unknown as Record<string, unknown>;
   const payment = result.payment as Record<string, unknown> | undefined;
   const rawStatus = result.status ?? result.payment?.status;
