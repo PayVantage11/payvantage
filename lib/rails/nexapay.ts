@@ -144,27 +144,25 @@ function pickAmount(
   return null;
 }
 
+// NexaPay's /payments/{id} payment object reports the settled value as
+// `amount_paid_usd` and the invoiced value as `amount_invoiced_usd`.
 const RECEIVED_KEYS = [
+  "amount_paid_usd",
   "amount_received",
   "received_amount",
   "amount_paid",
   "paid_amount",
   "settled_amount",
-  "amount_settled",
   "net_amount",
-  "total_paid",
-  "received",
-  "usd_received",
-  "amount_usd",
 ] as const;
 
 const INVOICE_KEYS = [
+  "amount_invoiced_usd",
   "amount",
   "invoice_amount",
   "amount_due",
   "requested_amount",
   "total",
-  "order_amount",
 ] as const;
 
 export interface NexaPayPaymentDetails {

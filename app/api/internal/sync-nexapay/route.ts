@@ -49,12 +49,17 @@ async function runSync(request: Request): Promise<NextResponse> {
 
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+  // Pull rows that still need work: anything pending, plus already-terminal
+  // completed/partially_paid rows missing a received amount (so fee data gets
+  // backfilled once). Expired/failed are never re-polled.
   const { data: rows, error } = await supabase
     .from("transactions")
     .select("id, amount, customer_email, provider_order_id")
     .eq("payment_rail", "nexapay")
-    .eq("status", "pending")
     .not("provider_order_id", "is", null)
+    .or(
+      "status.eq.pending,and(status.in.(completed,partially_paid),amount_received.is.null)"
+    )
     .order("created_at", { ascending: true })
     .limit(BATCH_LIMIT)
     .returns<PendingTx[]>();
