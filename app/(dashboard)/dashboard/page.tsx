@@ -1,4 +1,8 @@
-import { DataTable, StatusBadge } from "@/components/dashboard/data-table";
+import {
+  DataTable,
+  StatusBadge,
+  type TransactionStatus,
+} from "@/components/dashboard/data-table";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { createClient } from "@/utils/supabase/server";
 import { Activity, CreditCard, DollarSign, Wallet } from "lucide-react";
@@ -79,7 +83,7 @@ export default async function DashboardOverview(): Promise<ReactNode> {
       key: "status",
       header: "Status",
       render: (row: (typeof rows)[0]) => (
-        <StatusBadge status={row.status as "completed" | "pending" | "failed"} />
+        <StatusBadge status={row.status as TransactionStatus} />
       ),
     },
     {

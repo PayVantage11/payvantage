@@ -61,23 +61,37 @@ export function DataTable<T extends { id: string }>({
   );
 }
 
-export function StatusBadge({
-  status,
-}: {
-  status: "completed" | "pending" | "failed";
-}): ReactNode {
+export type TransactionStatus =
+  | "completed"
+  | "pending"
+  | "failed"
+  | "expired"
+  | "partially_paid";
+
+const STATUS_LABELS: Record<TransactionStatus, string> = {
+  completed: "Completed",
+  pending: "Pending",
+  failed: "Failed",
+  expired: "Expired",
+  partially_paid: "Partially Paid",
+};
+
+export function StatusBadge({ status }: { status: TransactionStatus }): ReactNode {
   return (
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        status === "completed" &&
-          "bg-emerald-500/10 text-emerald-500",
-        status === "pending" &&
-          "bg-amber-500/10 text-amber-500",
-        status === "failed" && "bg-red-500/10 text-red-500"
+        status === "completed" && "bg-emerald-500/10 text-emerald-500",
+        status === "pending" && "bg-amber-500/10 text-amber-500",
+        status === "failed" && "bg-red-500/10 text-red-500",
+        // Expired: muted/neutral so dead links never read as actionable.
+        status === "expired" && "bg-slate-500/10 text-slate-400",
+        // Partially paid: distinct blue, clearly not a clean completed order.
+        status === "partially_paid" && "bg-blue-500/10 text-blue-500"
       )}
     >
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {STATUS_LABELS[status] ??
+        status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );
 }

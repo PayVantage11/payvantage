@@ -93,16 +93,6 @@ export async function POST(request: Request) {
       const { data } = await supabase
         .from("transactions")
         .select("id, status, merchant_id")
-        .eq("provider_payment_id", paymentId)
-        .eq("payment_rail", "nexapay")
-        .single();
-      transaction = data;
-    }
-
-    if (!transaction && paymentId) {
-      const { data } = await supabase
-        .from("transactions")
-        .select("id, status, merchant_id")
         .eq("provider_order_id", paymentId)
         .eq("payment_rail", "nexapay")
         .single();
@@ -116,18 +106,22 @@ export async function POST(request: Request) {
       );
     }
 
-    if (transaction.status === "completed" || transaction.status === "failed") {
+    if (
+      transaction.status === "completed" ||
+      transaction.status === "failed" ||
+      transaction.status === "expired"
+    ) {
       return NextResponse.json(
         { message: "Transaction already in terminal state" },
         { status: 200 }
       );
     }
 
+    // Only provider_order_id and provider_reference exist on the transactions
+    // table; txid is folded into provider_reference when no payment id is given.
     const updateFields: Record<string, unknown> = {
       status: internalStatus,
       provider_reference: paymentId ?? txid ?? null,
-      provider_payment_id: paymentId ?? null,
-      provider_txid: txid ?? null,
       updated_at: new Date().toISOString(),
     };
 

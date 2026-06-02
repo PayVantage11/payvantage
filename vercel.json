@@ -1,5 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/internal/sync-nexapay",
+      "schedule": "* * * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

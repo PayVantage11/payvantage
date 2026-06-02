@@ -1,6 +1,10 @@
 "use client";
 
-import { DataTable, StatusBadge } from "@/components/dashboard/data-table";
+import {
+  DataTable,
+  StatusBadge,
+  type TransactionStatus,
+} from "@/components/dashboard/data-table";
 import { createClient } from "@/utils/supabase/client";
 import { Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
@@ -9,13 +13,22 @@ type Transaction = {
   id: string;
   amount: number;
   currency: string;
-  status: "completed" | "pending" | "failed";
+  status: TransactionStatus;
   customer_email: string | null;
   payram_reference_id: string | null;
   created_at: string;
 };
 
-type StatusFilter = "all" | "completed" | "pending" | "failed";
+type StatusFilter = "all" | TransactionStatus;
+
+const STATUS_FILTER_LABELS: Record<StatusFilter, string> = {
+  all: "All",
+  completed: "Completed",
+  pending: "Pending",
+  failed: "Failed",
+  expired: "Expired",
+  partially_paid: "Partially Paid",
+};
 
 const columns = [
   {
@@ -116,7 +129,16 @@ export default function TransactionsPage(): ReactNode {
       </div>
 
       <div className="flex items-center gap-2">
-        {(["all", "completed", "pending", "failed"] as const).map((s) => (
+        {(
+          [
+            "all",
+            "completed",
+            "pending",
+            "failed",
+            "expired",
+            "partially_paid",
+          ] as const
+        ).map((s) => (
           <button
             key={s}
             onClick={() => setFilter(s)}
@@ -126,7 +148,7 @@ export default function TransactionsPage(): ReactNode {
                 : "bg-muted text-muted-foreground hover:text-foreground"
             }`}
           >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
+            {STATUS_FILTER_LABELS[s]}
           </button>
         ))}
       </div>
